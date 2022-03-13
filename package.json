@@ -12,6 +12,7 @@
     "name": "Tzahi Levi",
     "email": "thetzahilevi@gmail.com"
   },
+  "repository": "https://github.com/tltk90/user-guider",
   "license": "ISC",
   "devDependencies": {
     "@babel/cli": "^7.17.6",
