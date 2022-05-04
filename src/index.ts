@@ -3,8 +3,12 @@ import { createSvg, removeSvg } from './svgCreator';
 const ANIMATE_TIME = 100;
 const containerId = 'ug-main-overlay-container';
 const getContainer = () => document.getElementById(containerId);
+export interface IElementConfig {
+    name: string;
+    text: string;
+}
 export interface IGuiderConfig {
-    elements: Array<{name: string, text: string}>,
+    elements: Array<IElementConfig>,
 
 }
 export default function guide(config: IGuiderConfig) {
