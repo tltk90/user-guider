@@ -3,7 +3,7 @@ const svgId = 'guider-svg';
 const maskId = 'guider-mask';
 
 
-function removeOldSvg() {
+export function removeSvg() {
     const oldSvg = document.getElementById(svgId);
     if(oldSvg) {
         oldSvg.parentElement.removeChild(oldSvg);
@@ -12,10 +12,9 @@ function removeOldSvg() {
 export function createSvg(x, y, width, height) {
     const WINDOW_WIDTH = document.body.clientWidth;
     const WINDOW_HEIGHT = document.body.clientHeight;
-    removeOldSvg();
     const svg  = createElement('svg', svgId);
-    svg.setAttributeNS(null,'width', WINDOW_WIDTH);
-    svg.setAttributeNS(null,'height', WINDOW_HEIGHT);
+    svg.setAttributeNS(null,'width', `${WINDOW_WIDTH}`);
+    svg.setAttributeNS(null,'height', `${WINDOW_HEIGHT}`);
     const defs = createDefs(x, y, width, height);
     svg.appendChild(defs);
     const maskRect = createRect(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, 'currentColor');

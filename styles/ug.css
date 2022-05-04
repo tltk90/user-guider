@@ -8,7 +8,7 @@
     pointer-events: none;
 }
 
-.ug-overlay svg {
+.ug-overlay #guider-svg {
     opacity: 0.5;
 }
 
@@ -21,15 +21,18 @@
     height: fit-content;
     max-width: 300px;
     max-height: 200px;
+    min-width: 200px;
     background-color: #fff;
     padding: 5px;
     margin: 10px;
     z-index: 1;
     border-radius: 5px;
-    border-color: #000;
     position: fixed;
     pointer-events: auto;
     opacity: 1 !important;
+    border-width: 4px;
+    border-style: double;
+    border-color: #000;
 }
 
 .ug-container span {
@@ -38,9 +41,20 @@
 
 .ug-container-button {
     display: flex;
-    flexDirection: row;
-    width: 100px;
-    justify-content: space-evenly;
+    flex-direction: row;
+    width: 50%;
+    justify-content: space-between;
+    color: inherit;
+}
+
+.ug-container-button button {
+    background-color: transparent;
+    border-width: 0;
+    color: inherit;
+}
+
+.ug-container-button button:disabled svg {
+    opacity: 0.3;
 }
 
 .ug-bubble-top::before {
@@ -98,6 +112,8 @@
 
 .ug-close-button {
     position: absolute;
+    font-size: 0.7em;
+    cursor: pointer;
     top: 5px;
     left: 5px;
     width: 0;
@@ -106,7 +122,7 @@
 
 .ug-close-button::after {
     content: "X";
-    color: black;
+    color: inherit;
 }
 
 /*.ug-animate {

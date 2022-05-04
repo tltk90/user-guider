@@ -1,4 +1,4 @@
-import {createSvg} from "./svgCreator";
+import { createSvg, removeSvg } from './svgCreator';
 
 const ANIMATE_TIME = 100;
 const containerId = 'ug-main-overlay-container';
@@ -52,10 +52,10 @@ function initializeElement() {
     const overlay = document.createElement('div');
     const guider = document.createElement('div');
     const guiderText = document.createElement('span');
-    const buttons = document.createElement('div');
+    const buttons = createButtonsContainer(); //document.createElement('div');
     const close = document.createElement('div');
     overlay.setAttribute('id', containerId);
-    buttons.innerHTML = '<button id="prev"> &lt; </button> <button id="next">&gt;</button>';
+    // buttons.innerHTML = '<button id="prev"> &lt; </button> <button id="next">&gt;</button>';
     overlay.setAttribute('class', 'ug-overlay');
     guider.setAttribute('class', 'ug-container');
     buttons.setAttribute('class', 'ug-container-button');
@@ -64,7 +64,7 @@ function initializeElement() {
     guider.appendChild(close);
     guider.appendChild(guiderText);
     guider.appendChild(buttons);
-
+    guider.style.boxShadow = '0px 0px 3px 1px #fff';
     guider.style.opacity = '0';
     document.body.appendChild(overlay);
     overlay.appendChild(guider);
@@ -92,6 +92,7 @@ function showGuide(element, guider, guiderText) {
         guider.style.opacity = '0';
         setTimeout(() => {
             clearBubbleClass(guider);
+            removeSvg();
             getContainer().appendChild(svg);
             guider.classList.add(classToBeAdded);
             guiderText.innerHTML = element.text;
@@ -117,3 +118,23 @@ function removeContainer() {
     document.body.removeChild(overlay);
 }
 
+function createButtonsContainer() {
+    const buttons = document.createElement('div');
+    buttons.innerHTML = `
+        <button id="prev"> 
+            <svg width="28" height="28" xmlns="http://www.w3.org/2000/svg">
+                 <g>
+                    <path stroke="currentColor" d="m 23.549223,0.4646839 3.738037,2.330995 c 0.681775,0.4256902 0.680038,1.1221716 0,1.545694 L 11.797506,14.000603 27.28726,23.659828 c 0.681775,0.425691 0.677433,1.122715 0,1.545694 l -3.738037,2.331 c -0.680038,0.423519 -1.798671,0.423519 -2.478708,0 L 4.3735387,17.123942 4.3413995,17.104448 0.60336235,14.773453 c -0.67916977,-0.424066 -0.68264428,-1.120006 0,-1.545694 L 4.3413995,10.896764 4.3735385,10.877271 21.070515,0.46469427 c 0.681775,-0.42514736 1.796065,-0.42514736 2.478708,0 z" fill="currentColor"/>
+                </g>
+            </svg>
+    </button> 
+    <button id="next">
+        <svg width="28" height="28" xmlns="http://www.w3.org/2000/svg">
+             <g>
+                <path transform="rotate(180 14 14)" stroke="currentColor" d="m 23.549223,0.4646839 3.738037,2.330995 c 0.681775,0.4256902 0.680038,1.1221716 0,1.545694 L 11.797506,14.000603 27.28726,23.659828 c 0.681775,0.425691 0.677433,1.122715 0,1.545694 l -3.738037,2.331 c -0.680038,0.423519 -1.798671,0.423519 -2.478708,0 L 4.3735387,17.123942 4.3413995,17.104448 0.60336235,14.773453 c -0.67916977,-0.424066 -0.68264428,-1.120006 0,-1.545694 L 4.3413995,10.896764 4.3735385,10.877271 21.070515,0.46469427 c 0.681775,-0.42514736 1.796065,-0.42514736 2.478708,0 z" fill="currentColor"/>
+            </g>
+        </svg>
+    </button>`;
+    return buttons;
+
+}
