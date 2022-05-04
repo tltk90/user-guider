@@ -4,9 +4,9 @@
   "description": "",
   "main": "dist/index.js",
   "scripts": {
-    "dev": "babel src -d dist --watch",
+    "dev": "tsc --watch",
     "prebuild": "npm run clean",
-    "build": "babel src -d dist",
+    "build": "tsc",
     "clean": "rm -rf dist",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -18,8 +18,6 @@
   "repository": "https://github.com/tltk90/user-guider",
   "license": "ISC",
   "devDependencies": {
-    "@babel/cli": "^7.17.6",
-    "@babel/core": "^7.17.5",
-    "@babel/preset-env": "^7.16.11"
+    "typescript": "^4.6.4"
   }
 }

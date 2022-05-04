@@ -27,13 +27,15 @@ export function createSvg(x, y, width, height, top, left, right, bottom) {
     svg.appendChild(clipPathRect);
     return svg;
 }
-function createRect(x, y, width, height, color) {
+function createRect(x, y, width, height, color?) {
     const rect = createElement('rect');
     rect.setAttributeNS(null, 'x', x);
     rect.setAttributeNS(null, 'y', y);
     rect.setAttributeNS(null, 'width', width);
     rect.setAttributeNS(null, 'height', height);
-    rect.setAttributeNS(null, 'fill', color);
+    if(color) {
+        rect.setAttributeNS(null, 'fill', color);
+    }
     return rect;
 }
 
@@ -57,7 +59,7 @@ function createDefs(x, y, width, height, top, left, right, bottom) {
 
 
 
-function createElement(name, id) {
+function createElement(name, id?) {
     const tag = document.createElementNS(ns, name);
     if(id) {
         tag.setAttributeNS(null, 'id', id);

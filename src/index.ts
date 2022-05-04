@@ -3,22 +3,26 @@ import {createSvg} from "./svgCreator";
 const ANIMATE_TIME = 100;
 const containerId = 'ug-main-overlay-container';
 const getContainer = () => document.getElementById(containerId);
-export function guide(config) {
+export interface IGuiderConfig {
+    elements: Array<{name: string, text: string}>,
+
+}
+export default function guide(config: IGuiderConfig) {
     let configIndex = 0;
-    let configCount = config.length - 1;
+    let configCount = config.elements.length - 1;
     const { guider, guiderText, buttons} = initializeElement();
     const setButtonDisableState = () => {
         if(configIndex === 0) {
-            buttons.children[0].disabled = true;
+            (buttons.children[0] as HTMLButtonElement).disabled = true;
         }
         else {
-            buttons.children[0].disabled = false;
+            (buttons.children[0] as HTMLButtonElement).disabled = false;
         }
         if(configIndex === configCount) {
-            buttons.children[1].disabled = true;
+            (buttons.children[1] as HTMLButtonElement).disabled = true;
         }
         else {
-            buttons.children[1].disabled = false;
+            (buttons.children[1] as HTMLButtonElement).disabled = false;
         }
     };
     buttons.children[0].addEventListener('click', () => {
@@ -26,7 +30,7 @@ export function guide(config) {
         configIndex--;
         requestAnimationFrame( () => {
             setButtonDisableState();
-            showGuide(config[configIndex], guider, guiderText);
+            showGuide(config.elements[configIndex], guider, guiderText);
         });
 
     });
@@ -35,11 +39,11 @@ export function guide(config) {
         configIndex++;
         requestAnimationFrame(() => {
             setButtonDisableState();
-            showGuide(config[configIndex], guider, guiderText);
+            showGuide(config.elements[configIndex], guider, guiderText);
         })
     });
     setButtonDisableState();
-    showGuide(config[configIndex], guider, guiderText);
+    showGuide(config.elements[configIndex], guider, guiderText);
 
 }
 
@@ -68,8 +72,8 @@ function initializeElement() {
     return { guider, guiderText, buttons};
 }
 
-function showGuide(c, guider, guiderText) {
-    const el = document.querySelector(c.element);
+function showGuide(element, guider, guiderText) {
+    const el = document.querySelector(element.name);
     const rect = el.getBoundingClientRect();
     const onTop = rect.y < document.body.clientHeight / 2;
     const onLeft = rect.x < document.body.clientWidth / 2;
@@ -90,7 +94,7 @@ function showGuide(c, guider, guiderText) {
             clearBubbleClass(guider);
             getContainer().appendChild(svg);
             guider.classList.add(classToBeAdded);
-            guiderText.innerHTML = c.text;
+            guiderText.innerHTML = element.text;
             const top = onTop ? rect.bottom : undefined;
             const bottom = !onTop ? (document.body.clientHeight - rect.top) : undefined;
             const left = onLeft ? rect.x - (rect.width / 2): rect.x + (rect.width / 2) - guider.clientWidth;
