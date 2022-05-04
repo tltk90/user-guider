@@ -77,7 +77,7 @@ function showGuide(element, guider, guiderText) {
     const rect = el.getBoundingClientRect();
     const onTop = rect.y < document.body.clientHeight / 2;
     const onLeft = rect.x < document.body.clientWidth / 2;
-    const svg = createSvg(rect.x, rect.y, rect.width, rect.height, rect.top, rect.left, rect.right, rect.bottom);
+    const svg = createSvg(rect.x, rect.y, rect.width, rect.height);
     let classToBeAdded;
     if(onTop) {
         classToBeAdded = onLeft ? 'ug-bubble-top' : 'ug-bubble-top-right';
