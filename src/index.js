@@ -1,5 +1,8 @@
-const ANIMATE_TIME = 500;
+import {createSvg} from "./svgCreator";
 
+const ANIMATE_TIME = 100;
+const containerId = 'ug-main-overlay-container';
+const getContainer = () => document.getElementById(containerId);
 export function guide(config) {
     let configIndex = 0;
     let configCount = config.length - 1;
@@ -47,6 +50,7 @@ function initializeElement() {
     const guiderText = document.createElement('span');
     const buttons = document.createElement('div');
     const close = document.createElement('div');
+    overlay.setAttribute('id', containerId);
     buttons.innerHTML = '<button id="prev"> &lt; </button> <button id="next">&gt;</button>';
     overlay.setAttribute('class', 'ug-overlay');
     guider.setAttribute('class', 'ug-container');
@@ -69,6 +73,7 @@ function showGuide(c, guider, guiderText) {
     const rect = el.getBoundingClientRect();
     const onTop = rect.y < document.body.clientHeight / 2;
     const onLeft = rect.x < document.body.clientWidth / 2;
+    const svg = createSvg(rect.x, rect.y, rect.width, rect.height, rect.top, rect.left, rect.right, rect.bottom);
     let classToBeAdded;
     if(onTop) {
         classToBeAdded = onLeft ? 'ug-bubble-top' : 'ug-bubble-top-right';
@@ -78,11 +83,12 @@ function showGuide(c, guider, guiderText) {
     }
     function animate() {
         const transition = `opacity ${ANIMATE_TIME / 2}ms ease-in-out`;
-        const oldT = el.style.transition;
+        const oldT = guider.style.transition;
         guider.style.transition = transition;
         guider.style.opacity = '0';
         setTimeout(() => {
             clearBubbleClass(guider);
+            getContainer().appendChild(svg);
             guider.classList.add(classToBeAdded);
             guiderText.innerHTML = c.text;
             const top = onTop ? rect.bottom : undefined;
@@ -103,6 +109,7 @@ function clearBubbleClass(el) {
     el.classList.remove('ug-bubble-bottom', 'ug-bubble-top', 'ug-bubble-bottom-left', 'ug-bubble-top-right');
 }
 function removeContainer() {
-    const overlay = document.querySelector('.ug-overlay');
+    const overlay = getContainer();
     document.body.removeChild(overlay);
 }
+

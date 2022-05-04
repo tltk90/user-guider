@@ -4,7 +4,10 @@
   "description": "",
   "main": "dist/index.js",
   "scripts": {
+    "dev": "babel src -d dist --watch",
+    "prebuild": "npm run clean",
     "build": "babel src -d dist",
+    "clean": "rm -rf dist",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],

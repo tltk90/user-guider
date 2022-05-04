@@ -5,6 +5,11 @@
     top: 0;
     left: 0;
     z-index: 100000;
+    pointer-events: none;
+}
+
+.ug-overlay svg {
+    opacity: 0.5;
 }
 
 .ug-container {
@@ -14,12 +19,17 @@
     justify-content: center;
     width: fit-content;
     height: fit-content;
+    max-width: 300px;
+    max-height: 200px;
     background-color: #fff;
     padding: 5px;
     margin: 10px;
+    z-index: 1;
     border-radius: 5px;
     border-color: #000;
     position: fixed;
+    pointer-events: auto;
+    opacity: 1 !important;
 }
 
 .ug-container span {
