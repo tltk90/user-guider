@@ -28,16 +28,16 @@ export default function guide(config: IGuiderConfig) {
         const prevBtn = buttons.children[0] as HTMLDivElement;
         const nextBtn = buttons.children[1] as HTMLDivElement;
         if(configIndex === 0) {
-            (prevBtn.children[1] as HTMLSpanElement).innerText = 'Exit';
+            (prevBtn.children[0] as HTMLSpanElement).innerText = 'Skip';
         }
         else {
-            (prevBtn.children[1] as HTMLSpanElement).innerText = 'Back';
+            (prevBtn.children[0] as HTMLSpanElement).innerText = 'Back';
         }
         if(configIndex === configCount) {
-            (nextBtn.children[1] as HTMLSpanElement).innerText = 'Done';
+            (nextBtn.children[0] as HTMLSpanElement).innerText = 'Done';
         }
         else {
-            (nextBtn.children[1] as HTMLSpanElement).innerText = 'Next';
+            (nextBtn.children[0] as HTMLSpanElement).innerText = 'Next';
         }
     };
     const checkIfDone = () => configIndex < 0 || configIndex > configCount;
@@ -109,20 +109,10 @@ export default function guide(config: IGuiderConfig) {
         const buttons = document.createElement('div');
         buttons.innerHTML = `
         <div  id="prevBtn">
-            <svg width="28" height="28" xmlns="http://www.w3.org/2000/svg">
-                 <g>
-                    <path stroke="currentColor" d="m 23.549223,0.4646839 3.738037,2.330995 c 0.681775,0.4256902 0.680038,1.1221716 0,1.545694 L 11.797506,14.000603 27.28726,23.659828 c 0.681775,0.425691 0.677433,1.122715 0,1.545694 l -3.738037,2.331 c -0.680038,0.423519 -1.798671,0.423519 -2.478708,0 L 4.3735387,17.123942 4.3413995,17.104448 0.60336235,14.773453 c -0.67916977,-0.424066 -0.68264428,-1.120006 0,-1.545694 L 4.3413995,10.896764 4.3735385,10.877271 21.070515,0.46469427 c 0.681775,-0.42514736 1.796065,-0.42514736 2.478708,0 z" fill="currentColor"/>
-                </g>
-            </svg>
-    <span>back</span>
+    <span>Back</span>
     </div>
-    <div id="nextBtn">
-        <svg width="28" height="28" xmlns="http://www.w3.org/2000/svg">
-             <g>
-                <path transform="rotate(180 14 14)" stroke="currentColor" d="m 23.549223,0.4646839 3.738037,2.330995 c 0.681775,0.4256902 0.680038,1.1221716 0,1.545694 L 11.797506,14.000603 27.28726,23.659828 c 0.681775,0.425691 0.677433,1.122715 0,1.545694 l -3.738037,2.331 c -0.680038,0.423519 -1.798671,0.423519 -2.478708,0 L 4.3735387,17.123942 4.3413995,17.104448 0.60336235,14.773453 c -0.67916977,-0.424066 -0.68264428,-1.120006 0,-1.545694 L 4.3413995,10.896764 4.3735385,10.877271 21.070515,0.46469427 c 0.681775,-0.42514736 1.796065,-0.42514736 2.478708,0 z" fill="currentColor"/>
-            </g>
-        </svg>
-    <span>back</span>
+    <div id="nextBtn">       
+        <span>Next</span>
 </div>`;
 
         buttons.children[0].addEventListener('click', prev);
