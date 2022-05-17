@@ -35,7 +35,13 @@
     border-color: #000;
 }
 
-.ug-container span {
+.ug-container-title {
+    font-size: 2em;
+    font-weight: bold;
+    align-items: center;
+}
+
+.ug-container-title, .ug-container-text {
     padding: 15px;
 }
 
@@ -47,14 +53,17 @@
     color: inherit;
 }
 
-.ug-container-button button {
-    background-color: transparent;
-    border-width: 0;
-    color: inherit;
+.ug-container-button div {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
 }
 
-.ug-container-button button:disabled svg {
-    opacity: 0.3;
+.ug-container-button div * {
+    padding: 5px 0;
+    margin: auto;
 }
 
 .ug-bubble-top::before {
