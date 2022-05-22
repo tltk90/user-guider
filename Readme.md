@@ -1,9 +1,9 @@
 # **_User Guider_**
 # Take your users to a tour in your app. 
-### install 
+## Install 
 `npm install user-guider`
 
-### Usage
+## Usage
 ```
 import { guide } from 'user-guider';
 ...
@@ -26,7 +26,7 @@ const config = {
 }
 guide(config)
 ```
-##### you nedd to include `styles/ug.css` to your global style.
+**you nedd to include `styles/ug.css` to your global style.**
 
 # Config
 The config is an object, with the following properties
