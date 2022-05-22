@@ -6,7 +6,7 @@
 ## Usage
 ```
 import { guide } from 'user-guider';
-...
+// rest of your code
 const config = {
     elements: [{
             title: 'user-guider'
