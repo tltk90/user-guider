@@ -9,13 +9,37 @@ export interface IElementConfig {
     text: string;
     title?: string;
 }
+export interface IGuiderOptions {
+    rtl: boolean;
+    buttonsTitle: {
+        next: string;
+        back: string;
+        done: string;
+        skip: string;
+    },
+    colors: {
+        background: string;
+        text: string;
+    }
+}
 export interface IGuiderConfig {
     elements: Array<IElementConfig>,
+    options: IGuiderOptions
 
 }
+
+const defaultOptions: Partial<IGuiderOptions> = {
+    buttonsTitle: {
+        next: 'Next',
+        back: 'Back',
+        done: 'Done',
+        skip: 'Skip'
+    }
+};
 export default function guide(config: IGuiderConfig) {
     const WINDOW_WIDTH = () => document.body.clientWidth;
     const WINDOW_HEIGHT = () => document.body.clientHeight;
+    const options = Object.assign({}, config.options);
     let configIndex = 0;
     let configCount = config.elements.length - 1;
     let currentElement;
@@ -23,21 +47,22 @@ export default function guide(config: IGuiderConfig) {
     let guiderTitle: HTMLSpanElement;
     let guiderText: HTMLSpanElement;
     initializeElement();
+    setColorsValue();
     const setButtonState = () => {
         const buttons = guiderContainer.children[3];
         const prevBtn = buttons.children[0] as HTMLDivElement;
         const nextBtn = buttons.children[1] as HTMLDivElement;
         if(configIndex === 0) {
-            (prevBtn.children[0] as HTMLSpanElement).innerText = 'Skip';
+            (prevBtn.children[0] as HTMLSpanElement).innerText = options.buttonsTitle.skip || defaultOptions.buttonsTitle.skip;
         }
         else {
-            (prevBtn.children[0] as HTMLSpanElement).innerText = 'Back';
+            (prevBtn.children[0] as HTMLSpanElement).innerText = options.buttonsTitle.back || defaultOptions.buttonsTitle.back;
         }
         if(configIndex === configCount) {
-            (nextBtn.children[0] as HTMLSpanElement).innerText = 'Done';
+            (nextBtn.children[0] as HTMLSpanElement).innerText = options.buttonsTitle.done || defaultOptions.buttonsTitle.done;
         }
         else {
-            (nextBtn.children[0] as HTMLSpanElement).innerText = 'Next';
+            (nextBtn.children[0] as HTMLSpanElement).innerText = options.buttonsTitle.next || defaultOptions.buttonsTitle.next;
         }
     };
     const checkIfDone = () => configIndex < 0 || configIndex > configCount;
@@ -84,6 +109,7 @@ export default function guide(config: IGuiderConfig) {
         const close = document.createElement('div');
         close.setAttribute('class', 'ug-close-button');
         close.addEventListener('click', removeContainer);
+        close.style[options.rtl ? 'right' : 'left'] = '5px';
         // init guider container
         guiderContainer = document.createElement('div');
         guiderContainer.setAttribute('class', 'ug-container');
@@ -93,18 +119,28 @@ export default function guide(config: IGuiderConfig) {
         guiderText.setAttribute('class', 'ug-container-text');
         const buttons = createButtonsContainer();
         buttons.setAttribute('class', 'ug-container-button');
-
         guiderContainer.appendChild(close);
         guiderContainer.appendChild(guiderTitle);
         guiderContainer.appendChild(guiderText);
         guiderContainer.appendChild(buttons);
-        guiderTitle.style.textShadow = '0px 3px 2px #00000055';
-        guiderContainer.style.boxShadow = '0px 0px 3px 1px #fff';
         guiderContainer.style.opacity = '0';
+        if(options.rtl) {
+            guiderContainer.setAttribute('dir', 'rtl');
+        }
         document.body.appendChild(overlay);
         overlay.appendChild(guiderContainer);
     }
 
+    function setColorsValue() {
+        const { colors } = options;
+        const varContainer: any = document.querySelector(':root');
+        if(colors?.background) {
+            varContainer.style.setProperty('--background', colors.background);
+        }
+        if(colors?.text) {
+            varContainer.style.setProperty('--text', colors.text);
+        }
+    }
     function createButtonsContainer() {
         const buttons = document.createElement('div');
         buttons.innerHTML = `
