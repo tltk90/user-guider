@@ -1,9 +1,13 @@
 import UserGuiderError from './error';
 import { createSvg, removeSvg } from './svgCreator';
 
-const ANIMATE_TIME = 100;
 const containerId = 'ug-main-overlay-container';
 const getContainer = () => document.getElementById(containerId);
+enum animationKey {
+    none = 'none',
+    fade = 'fade',
+    slide = 'slide'
+}
 export interface IElementConfig {
     name?: string;
     text: string;
@@ -21,6 +25,7 @@ export interface IGuiderOptions {
         background: string;
         text: string;
     }
+    animation: animationKey
 }
 export interface IGuiderConfig {
     elements: Array<IElementConfig>,
@@ -34,12 +39,15 @@ const defaultOptions: Partial<IGuiderOptions> = {
         back: 'Back',
         done: 'Done',
         skip: 'Skip'
-    }
+    },
+    animation: animationKey.fade
 };
 export default function guide(config: IGuiderConfig) {
     const WINDOW_WIDTH = () => document.body.clientWidth;
     const WINDOW_HEIGHT = () => document.body.clientHeight;
     const options = Object.assign({}, config.options);
+    const ANIMATE_TIME = options.animation === animationKey.none ? 0 : 500;
+    checkIfAnimationIsValid();
     let configIndex = 0;
     let configCount = config.elements.length - 1;
     let currentElement;
@@ -123,7 +131,6 @@ export default function guide(config: IGuiderConfig) {
         guiderContainer.appendChild(guiderTitle);
         guiderContainer.appendChild(guiderText);
         guiderContainer.appendChild(buttons);
-        guiderContainer.style.opacity = '0';
         if(options.rtl) {
             guiderContainer.setAttribute('dir', 'rtl');
         }
@@ -178,6 +185,14 @@ export default function guide(config: IGuiderConfig) {
         document.body.removeChild(overlay);
     }
 
+    function checkIfAnimationIsValid() {
+        if(options.animation) {
+            if(Object.keys(animationKey).indexOf(options.animation) === -1) {
+                throw new UserGuiderError('animation must be one of ' + Object.keys(animationKey).join(', '))
+            }
+        }
+
+    }
     // main function
     function showGuide() {
         currentElement = Object.assign({}, config.elements[configIndex]);
@@ -188,6 +203,7 @@ export default function guide(config: IGuiderConfig) {
         if(currentElement.target) {
             currentElement.target.scrollIntoViewIfNeeded(true);
         }
+        const isNotNoneAnimation = options.animation !== animationKey.none;
         const rect = getRect();
         const onTop = rect.y < WINDOW_HEIGHT() / 2;
         const onLeft = rect.x < WINDOW_WIDTH() / 2;
@@ -200,10 +216,9 @@ export default function guide(config: IGuiderConfig) {
             classToBeAdded = onLeft ? 'ug-bubble-bottom-left': 'ug-bubble-bottom';
         }
         function animate() {
-            const transition = `opacity ${ANIMATE_TIME / 2}ms ease-in-out`;
-            const oldT = guiderContainer.style.transition;
-            guiderContainer.style.transition = transition;
-            guiderContainer.style.opacity = '0';
+            if(isNotNoneAnimation) {
+                guiderContainer.style.animation = `${ options.animation || defaultOptions.animation }-out ${ ANIMATE_TIME }ms forwards`;
+            }
             setTimeout(() => {
                 clearBubbleClass(guiderContainer);
                 removeSvg();
@@ -234,9 +249,11 @@ export default function guide(config: IGuiderConfig) {
                 guiderContainer.style.top = top ? `${top}px` : '';
                 guiderContainer.style.bottom = bottom ? `${bottom}px` : '';
                 guiderContainer.style.left = `${left}px`;
-                guiderContainer.style.opacity = '1';
-                guiderContainer.style.transition = oldT;
                 setButtonState();
+                guiderContainer.style.visibility = 'visible';
+                if(isNotNoneAnimation) {
+                    guiderContainer.style.animation = `${options.animation || defaultOptions.animation}-in ${ANIMATE_TIME}ms forwards`;
+                }
             }, ANIMATE_TIME);
         }
         animate();
