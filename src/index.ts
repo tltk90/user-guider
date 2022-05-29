@@ -60,17 +60,21 @@ export default function guide(config: IGuiderConfig) {
         const buttons = guiderContainer.children[3];
         const prevBtn = buttons.children[0] as HTMLDivElement;
         const nextBtn = buttons.children[1] as HTMLDivElement;
+        const setButton = (btn: HTMLDivElement, title: string) => {
+            (btn.children[0] as HTMLSpanElement).innerText = title.substring(0, 6) + `${title.length > 6 ? ' ...' : ''}`;
+            btn.setAttribute('title', title)
+        };
         if(configIndex === 0) {
-            (prevBtn.children[0] as HTMLSpanElement).innerText = options.buttonsTitle.skip || defaultOptions.buttonsTitle.skip;
+            setButton(prevBtn, options.buttonsTitle.skip || defaultOptions.buttonsTitle.skip);
         }
         else {
-            (prevBtn.children[0] as HTMLSpanElement).innerText = options.buttonsTitle.back || defaultOptions.buttonsTitle.back;
+            setButton(prevBtn, options.buttonsTitle.back || defaultOptions.buttonsTitle.back);
         }
         if(configIndex === configCount) {
-            (nextBtn.children[0] as HTMLSpanElement).innerText = options.buttonsTitle.done || defaultOptions.buttonsTitle.done;
+            setButton(nextBtn, options.buttonsTitle.done || defaultOptions.buttonsTitle.done);
         }
         else {
-            (nextBtn.children[0] as HTMLSpanElement).innerText = options.buttonsTitle.next || defaultOptions.buttonsTitle.next;
+            setButton(nextBtn, options.buttonsTitle.next || defaultOptions.buttonsTitle.next);
         }
     };
     const checkIfDone = () => configIndex < 0 || configIndex > configCount;
