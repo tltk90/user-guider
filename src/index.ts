@@ -89,13 +89,9 @@ export default function guide(config: IGuiderConfig) {
     // private functions
     function step() {
         if(checkIfDone()) {
-            removeContainer();
+            return removeContainer();
         }
-        else {
-            requestAnimationFrame( () => {
-                showGuide();
-            });
-        }
+        showGuide();
     }
 
     function next() {
