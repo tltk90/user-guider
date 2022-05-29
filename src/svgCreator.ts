@@ -3,10 +3,15 @@ const svgId = 'guider-svg';
 const maskId = 'guider-mask';
 const clipId = 'guider-clip';
 
+const preventClicks = (e: MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+};
 
 export function removeSvg() {
     const oldSvg = document.getElementById(svgId);
     if(oldSvg) {
+        oldSvg.removeEventListener('click', preventClicks);
         oldSvg.parentElement.removeChild(oldSvg);
     }
 }
@@ -27,7 +32,7 @@ export function createSvg(x, y, width, height, right, bottom) {
     disableRect.setAttributeNS(null, 'pointer-events', 'none');
     svg.appendChild(maskRect);
     svg.appendChild(clipPathRect);
-
+    svg.addEventListener('click', preventClicks);
     return svg;
 }
 function createRect(x, y, width, height, color?) {

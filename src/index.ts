@@ -79,11 +79,6 @@ export default function guide(config: IGuiderConfig) {
     };
     const checkIfDone = () => configIndex < 0 || configIndex > configCount;
     const onResize = () => showGuide();
-    const preventClicks = (e: MouseEvent) => {
-        e.preventDefault();
-        e.stopPropagation();
-    };
-    document.body.addEventListener('click', preventClicks);
     window.addEventListener('resize', onResize);
 
     // start
@@ -181,11 +176,11 @@ export default function guide(config: IGuiderConfig) {
     }
     function removeContainer() {
         const overlay = getContainer();
+        removeSvg();
         overlay?.querySelector('ug-close-button')?.removeEventListener('click', removeContainer);
         overlay?.querySelector('#nextBtn')?.removeEventListener('click', next);
         overlay?.querySelector('#prevBtn')?.removeEventListener('click', prev);
         window.removeEventListener('resize', onResize);
-        window.document.body.removeEventListener('click', preventClicks);
         document.body.removeChild(overlay);
     }
 
