@@ -129,7 +129,7 @@ export default function guide(config: IGuiderConfig) {
         guiderTitle.setAttribute('class', 'ug-container-title');
         guiderText = document.createElement('span');
         guiderText.setAttribute('class', 'ug-container-text');
-        const buttons = createButtonsContainer();
+        const buttons = createNavigatorContainer();
         buttons.setAttribute('class', 'ug-container-button');
         guiderContainer.appendChild(close);
         guiderContainer.appendChild(guiderTitle);
@@ -152,7 +152,7 @@ export default function guide(config: IGuiderConfig) {
             varContainer.style.setProperty('--text', colors.text);
         }
     }
-    function createButtonsContainer() {
+    function createNavigatorContainer() {
         const buttons = document.createElement('div');
         const prevBtn = document.createElement('div');
         prevBtn.setAttribute('id', prevBtnId);
@@ -201,8 +201,9 @@ export default function guide(config: IGuiderConfig) {
         const overlay = getContainer();
         removeSvg();
         overlay?.querySelector('ug-close-button')?.removeEventListener('click', removeContainer);
-        overlay?.querySelector('#nextBtn')?.removeEventListener('click', next);
-        overlay?.querySelector('#prevBtn')?.removeEventListener('click', prev);
+        overlay?.querySelector(`#${nextBtnId}`)?.removeEventListener('click', next);
+        overlay?.querySelector(`#${prevBtnId}`)?.removeEventListener('click', prev);
+        overlay?.querySelector(`#${selectNavId}`)?.removeEventListener('change', nav);
         window.removeEventListener('resize', onResize);
         document.body.removeChild(overlay);
     }
