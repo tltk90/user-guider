@@ -2,6 +2,9 @@ import UserGuiderError from './error';
 import { createSvg, removeSvg } from './svgCreator';
 
 const containerId = 'ug-main-overlay-container';
+const prevBtnId = 'prevBtn';
+const nextBtnId = 'nextBtn';
+const selectNavId = 'selectNav';
 const getContainer = () => document.getElementById(containerId);
 enum animationKey {
     none = 'none',
@@ -57,13 +60,14 @@ export default function guide(config: IGuiderConfig) {
     initializeElement();
     setColorsValue();
     const setButtonState = () => {
-        const buttons = guiderContainer.children[3];
-        const prevBtn = buttons.children[0] as HTMLDivElement;
-        const nextBtn = buttons.children[1] as HTMLDivElement;
+        const prevBtn = document.getElementById(prevBtnId) as HTMLDivElement;
+        const nextBtn = document.getElementById(nextBtnId) as HTMLDivElement;
+        const select = document.getElementById(selectNavId) as HTMLSelectElement;
         const setButton = (btn: HTMLDivElement, title: string) => {
-            (btn.children[0] as HTMLSpanElement).innerText = title.substring(0, 6) + `${title.length > 6 ? ' ...' : ''}`;
+            (btn.children[0] as HTMLSpanElement).innerText = title.substring(0, 6) + `${title.length > 6 ? '...' : ''}`;
             btn.setAttribute('title', title)
         };
+        select.value = `${configIndex}`;
         if(configIndex === 0) {
             setButton(prevBtn, options.buttonsTitle.skip || defaultOptions.buttonsTitle.skip);
         }
@@ -79,11 +83,6 @@ export default function guide(config: IGuiderConfig) {
     };
     const checkIfDone = () => configIndex < 0 || configIndex > configCount;
     const onResize = () => showGuide();
-    const preventClicks = (e: MouseEvent) => {
-        e.preventDefault();
-        e.stopPropagation();
-    };
-    document.body.addEventListener('click', preventClicks);
     window.addEventListener('resize', onResize);
 
     // start
@@ -94,13 +93,9 @@ export default function guide(config: IGuiderConfig) {
     // private functions
     function step() {
         if(checkIfDone()) {
-            removeContainer();
+            return removeContainer();
         }
-        else {
-            requestAnimationFrame( () => {
-                showGuide();
-            });
-        }
+        showGuide();
     }
 
     function next() {
@@ -110,6 +105,11 @@ export default function guide(config: IGuiderConfig) {
 
     function prev() {
         configIndex--;
+        step();
+    }
+    function nav() {
+        const select = document.getElementById(selectNavId) as HTMLSelectElement;
+        configIndex = +select.value;
         step();
     }
     function initializeElement() {
@@ -129,7 +129,7 @@ export default function guide(config: IGuiderConfig) {
         guiderTitle.setAttribute('class', 'ug-container-title');
         guiderText = document.createElement('span');
         guiderText.setAttribute('class', 'ug-container-text');
-        const buttons = createButtonsContainer();
+        const buttons = createNavigatorContainer();
         buttons.setAttribute('class', 'ug-container-button');
         guiderContainer.appendChild(close);
         guiderContainer.appendChild(guiderTitle);
@@ -152,18 +152,36 @@ export default function guide(config: IGuiderConfig) {
             varContainer.style.setProperty('--text', colors.text);
         }
     }
-    function createButtonsContainer() {
+    function createNavigatorContainer() {
         const buttons = document.createElement('div');
-        buttons.innerHTML = `
-        <div  id="prevBtn">
-    <span>Back</span>
-    </div>
-    <div id="nextBtn">       
-        <span>Next</span>
-</div>`;
-
-        buttons.children[0].addEventListener('click', prev);
-        buttons.children[1].addEventListener('click', next);
+        const prevBtn = document.createElement('div');
+        prevBtn.setAttribute('id', prevBtnId);
+        prevBtn.classList.add('clickable', options.rtl ? 'rtl' : '');
+        const nextBtn = document.createElement('div');
+        nextBtn.setAttribute('id', nextBtnId);
+        nextBtn.classList.add('clickable', options.rtl ? 'rtl' : '');
+        const navBtn = document.createElement('div');
+        const spanPrev = document.createElement('span');
+        const spanNext = document.createElement('span');
+        const select = document.createElement('select');
+        select.setAttribute('id', selectNavId);
+        for(let i = 1; i <= config.elements.length; i++ ) {
+            const o = document.createElement('option');
+            o.setAttribute('value', `${i - 1}`);
+            o.text = `${i}`;
+            select.add(o);
+        }
+        spanNext.innerText = 'Next';
+        spanPrev.innerText = 'Back';
+        navBtn.appendChild(select);
+        prevBtn.appendChild(spanPrev);
+        nextBtn.appendChild(spanNext);
+        prevBtn.addEventListener('click', prev);
+        nextBtn.addEventListener('click', next);
+        select.addEventListener('change', nav);
+        buttons.appendChild(prevBtn);
+        buttons.appendChild(navBtn);
+        buttons.appendChild(nextBtn);
         return buttons;
 
     }
@@ -181,11 +199,12 @@ export default function guide(config: IGuiderConfig) {
     }
     function removeContainer() {
         const overlay = getContainer();
+        removeSvg();
         overlay?.querySelector('ug-close-button')?.removeEventListener('click', removeContainer);
-        overlay?.querySelector('#nextBtn')?.removeEventListener('click', next);
-        overlay?.querySelector('#prevBtn')?.removeEventListener('click', prev);
+        overlay?.querySelector(`#${nextBtnId}`)?.removeEventListener('click', next);
+        overlay?.querySelector(`#${prevBtnId}`)?.removeEventListener('click', prev);
+        overlay?.querySelector(`#${selectNavId}`)?.removeEventListener('change', nav);
         window.removeEventListener('resize', onResize);
-        window.document.body.removeEventListener('click', preventClicks);
         document.body.removeChild(overlay);
     }
 
