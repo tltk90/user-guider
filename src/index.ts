@@ -121,7 +121,6 @@ export default function guide(config: IGuiderConfig) {
         const close = document.createElement('div');
         close.setAttribute('class', 'ug-close-button');
         close.addEventListener('click', removeContainer);
-        close.style[options.rtl ? 'right' : 'left'] = '5px';
         // init guider container
         guiderContainer = document.createElement('div');
         guiderContainer.setAttribute('class', 'ug-container');
@@ -143,7 +142,7 @@ export default function guide(config: IGuiderConfig) {
 
     function setColorsValue() {
         const { colors } = options;
-        const varContainer: any = document.querySelector(':root');
+        const varContainer: any = document.getElementById(containerId);
         if(colors?.background) {
             varContainer.style.setProperty('--background', colors.background);
         }
@@ -156,10 +155,14 @@ export default function guide(config: IGuiderConfig) {
         buttons.setAttribute('class', 'ug-container-navigator');
         const prevBtn = document.createElement('div');
         prevBtn.setAttribute('id', prevBtnId);
-        prevBtn.classList.add('clickable', options.rtl ? 'rtl' : '');
+        prevBtn.classList.add('clickable');
         const nextBtn = document.createElement('div');
         nextBtn.setAttribute('id', nextBtnId);
-        nextBtn.classList.add('clickable', options.rtl ? 'rtl' : '');
+        nextBtn.classList.add('clickable');
+        if(options.rtl) {
+            prevBtn.classList.add('rtl');
+            nextBtn.classList.add('rtl');
+        }
         const navBtn = document.createElement('div');
         const spanPrev = document.createElement('span');
         const spanNext = document.createElement('span');

@@ -1,4 +1,4 @@
 .idea/
 src/
 node_modules/
-styles/*.less
+styles/ug.less
