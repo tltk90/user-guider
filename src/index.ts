@@ -11,6 +11,10 @@ enum animationKey {
     fade = 'fade',
     slide = 'slide'
 }
+enum buttonThemeKey {
+    solid = 'solid',
+    round = 'round'
+}
 export interface IElementConfig {
     name?: string;
     text: string;
@@ -18,12 +22,14 @@ export interface IElementConfig {
 }
 export interface IGuiderOptions {
     rtl: boolean;
+    font: string;
     buttonsTitle: {
         next: string;
         back: string;
         done: string;
         skip: string;
     },
+    buttonTheme: buttonThemeKey;
     colors: {
         background: string;
         text: string;
@@ -43,6 +49,7 @@ const defaultOptions: Partial<IGuiderOptions> = {
         done: 'Done',
         skip: 'Skip'
     },
+    buttonTheme: buttonThemeKey.solid,
     animation: animationKey.fade
 };
 export default function guide(config: IGuiderConfig) {
@@ -135,6 +142,11 @@ export default function guide(config: IGuiderConfig) {
         guiderContainer.appendChild(buttons);
         if(options.rtl) {
             guiderContainer.setAttribute('dir', 'rtl');
+            close.classList.add('rtl');
+            buttons.classList.add('rtl');
+        }
+        if(options.font) {
+            overlay.style.fontFamily = options.font;
         }
         document.body.appendChild(overlay);
         overlay.appendChild(guiderContainer);
@@ -152,17 +164,13 @@ export default function guide(config: IGuiderConfig) {
     }
     function createNavigatorContainer() {
         const buttons = document.createElement('div');
-        buttons.setAttribute('class', 'ug-container-navigator');
+        buttons.classList.add('ug-container-navigator', options.buttonTheme || defaultOptions.buttonTheme);
         const prevBtn = document.createElement('div');
         prevBtn.setAttribute('id', prevBtnId);
         prevBtn.classList.add('clickable');
         const nextBtn = document.createElement('div');
         nextBtn.setAttribute('id', nextBtnId);
         nextBtn.classList.add('clickable');
-        if(options.rtl) {
-            prevBtn.classList.add('rtl');
-            nextBtn.classList.add('rtl');
-        }
         const navBtn = document.createElement('div');
         const spanPrev = document.createElement('span');
         const spanNext = document.createElement('span');

@@ -128,25 +128,34 @@
         background-color: var(--background);
       }
     }
-    #prevBtn {
-      &.rtl {
-        border-bottom-right-radius: var(--border-radius);
-        border-top-right-radius: var(--border-radius);
-      }
-      &:not(.rtl) {
-        border-bottom-left-radius: var(--border-radius);
-        border-top-left-radius: var(--border-radius);
+
+    &.solid {
+      div {
+        margin: 0 5px;
       }
     }
-
-    #nextBtn {
-      &.rtl {
-        border-bottom-left-radius: var(--border-radius);
-        border-top-left-radius: var(--border-radius);
-      }
+    &.round {
       &:not(.rtl) {
-        border-bottom-right-radius: var(--border-radius);
-        border-top-right-radius: var(--border-radius);
+        #prevBtn {
+            border-bottom-left-radius: var(--border-radius);
+            border-top-left-radius: var(--border-radius);
+        }
+
+        #nextBtn {
+          border-bottom-right-radius: var(--border-radius);
+          border-top-right-radius: var(--border-radius);
+        }
+      }
+
+      &.rtl {
+        #prevBtn {
+          border-bottom-right-radius: var(--border-radius);
+          border-top-right-radius: var(--border-radius);
+        }
+        #nextBtn {
+          border-bottom-left-radius: var(--border-radius);
+          border-top-left-radius: var(--border-radius);
+        }
       }
     }
   }
@@ -156,12 +165,12 @@
     position: absolute;
     font-size: 16px;
     cursor: pointer;
-    align-self: flex-start !important;
+    align-self: flex-end !important;
     top: 5px;
     margin: 0 5px;
 
-    &:dir(rtl) {
-      align-self: flex-end !important;
+    &.rtl {
+      align-self: flex-start !important;
     }
 
     &::after {
