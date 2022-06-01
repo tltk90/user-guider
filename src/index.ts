@@ -130,7 +130,6 @@ export default function guide(config: IGuiderConfig) {
         guiderText = document.createElement('span');
         guiderText.setAttribute('class', 'ug-container-text');
         const buttons = createNavigatorContainer();
-        buttons.setAttribute('class', 'ug-container-button');
         guiderContainer.appendChild(close);
         guiderContainer.appendChild(guiderTitle);
         guiderContainer.appendChild(guiderText);
@@ -154,6 +153,7 @@ export default function guide(config: IGuiderConfig) {
     }
     function createNavigatorContainer() {
         const buttons = document.createElement('div');
+        buttons.setAttribute('class', 'ug-container-navigator');
         const prevBtn = document.createElement('div');
         prevBtn.setAttribute('id', prevBtnId);
         prevBtn.classList.add('clickable', options.rtl ? 'rtl' : '');
