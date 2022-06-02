@@ -11,6 +11,10 @@ enum animationKey {
     fade = 'fade',
     slide = 'slide'
 }
+enum buttonThemeKey {
+    solid = 'solid',
+    round = 'round'
+}
 export interface IElementConfig {
     name?: string;
     text: string;
@@ -18,12 +22,14 @@ export interface IElementConfig {
 }
 export interface IGuiderOptions {
     rtl: boolean;
+    font: string;
     buttonsTitle: {
         next: string;
         back: string;
         done: string;
         skip: string;
     },
+    buttonTheme: buttonThemeKey;
     colors: {
         background: string;
         text: string;
@@ -43,6 +49,7 @@ const defaultOptions: Partial<IGuiderOptions> = {
         done: 'Done',
         skip: 'Skip'
     },
+    buttonTheme: buttonThemeKey.round,
     animation: animationKey.fade
 };
 export default function guide(config: IGuiderConfig) {
@@ -121,7 +128,6 @@ export default function guide(config: IGuiderConfig) {
         const close = document.createElement('div');
         close.setAttribute('class', 'ug-close-button');
         close.addEventListener('click', removeContainer);
-        close.style[options.rtl ? 'right' : 'left'] = '5px';
         // init guider container
         guiderContainer = document.createElement('div');
         guiderContainer.setAttribute('class', 'ug-container');
@@ -130,13 +136,17 @@ export default function guide(config: IGuiderConfig) {
         guiderText = document.createElement('span');
         guiderText.setAttribute('class', 'ug-container-text');
         const buttons = createNavigatorContainer();
-        buttons.setAttribute('class', 'ug-container-button');
         guiderContainer.appendChild(close);
         guiderContainer.appendChild(guiderTitle);
         guiderContainer.appendChild(guiderText);
         guiderContainer.appendChild(buttons);
         if(options.rtl) {
             guiderContainer.setAttribute('dir', 'rtl');
+            close.classList.add('rtl');
+            buttons.classList.add('rtl');
+        }
+        if(options.font) {
+            overlay.style.fontFamily = options.font;
         }
         document.body.appendChild(overlay);
         overlay.appendChild(guiderContainer);
@@ -144,7 +154,7 @@ export default function guide(config: IGuiderConfig) {
 
     function setColorsValue() {
         const { colors } = options;
-        const varContainer: any = document.querySelector(':root');
+        const varContainer: any = document.getElementById(containerId);
         if(colors?.background) {
             varContainer.style.setProperty('--background', colors.background);
         }
@@ -154,12 +164,13 @@ export default function guide(config: IGuiderConfig) {
     }
     function createNavigatorContainer() {
         const buttons = document.createElement('div');
+        buttons.classList.add('ug-container-navigator', options.buttonTheme || defaultOptions.buttonTheme);
         const prevBtn = document.createElement('div');
         prevBtn.setAttribute('id', prevBtnId);
-        prevBtn.classList.add('clickable', options.rtl ? 'rtl' : '');
+        prevBtn.classList.add('clickable');
         const nextBtn = document.createElement('div');
         nextBtn.setAttribute('id', nextBtnId);
-        nextBtn.classList.add('clickable', options.rtl ? 'rtl' : '');
+        nextBtn.classList.add('clickable');
         const navBtn = document.createElement('div');
         const spanPrev = document.createElement('span');
         const spanNext = document.createElement('span');
