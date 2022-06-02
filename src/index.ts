@@ -49,7 +49,7 @@ const defaultOptions: Partial<IGuiderOptions> = {
         done: 'Done',
         skip: 'Skip'
     },
-    buttonTheme: buttonThemeKey.solid,
+    buttonTheme: buttonThemeKey.round,
     animation: animationKey.fade
 };
 export default function guide(config: IGuiderConfig) {
