@@ -1,5 +1,6 @@
 import UserGuiderError from './error';
 import { createSvg, removeSvg } from './svgCreator';
+import { createDom, removeDom } from './helpers';
 
 const containerId = 'ug-main-overlay-container';
 const prevBtnId = 'prevBtn';
@@ -29,7 +30,7 @@ export interface IGuiderOptions {
         done: string;
         skip: string;
     },
-    buttonTheme: buttonThemeKey;
+    buttonsTheme: buttonThemeKey;
     colors: {
         background: string;
         text: string;
@@ -49,7 +50,7 @@ const defaultOptions: Partial<IGuiderOptions> = {
         done: 'Done',
         skip: 'Skip'
     },
-    buttonTheme: buttonThemeKey.round,
+    buttonsTheme: buttonThemeKey.round,
     animation: animationKey.fade
 };
 export default function guide(config: IGuiderConfig) {
@@ -163,15 +164,10 @@ export default function guide(config: IGuiderConfig) {
         }
     }
     function createNavigatorContainer() {
-        const buttons = document.createElement('div');
-        buttons.classList.add('ug-container-navigator', options.buttonTheme || defaultOptions.buttonTheme);
-        const prevBtn = document.createElement('div');
-        prevBtn.setAttribute('id', prevBtnId);
-        prevBtn.classList.add('clickable');
-        const nextBtn = document.createElement('div');
-        nextBtn.setAttribute('id', nextBtnId);
-        nextBtn.classList.add('clickable');
-        const navBtn = document.createElement('div');
+        const buttons = createDom('div', ['ug-container-navigator', options.buttonsTheme || defaultOptions.buttonsTheme]);
+        const prevBtn = createDom('div', prevBtnId, ['clickable'], [{type: 'click', fn: prev}]);
+        const nextBtn = createDom('div', nextBtnId, ['clickable']);
+        const navBtn = createDom('div', selectNavId);
         const spanPrev = document.createElement('span');
         const spanNext = document.createElement('span');
         const select = document.createElement('select');
@@ -187,7 +183,7 @@ export default function guide(config: IGuiderConfig) {
         navBtn.appendChild(select);
         prevBtn.appendChild(spanPrev);
         nextBtn.appendChild(spanNext);
-        prevBtn.addEventListener('click', prev);
+        // prevBtn.addEventListener('click', prev);
         nextBtn.addEventListener('click', next);
         select.addEventListener('change', nav);
         buttons.appendChild(prevBtn);
@@ -213,7 +209,8 @@ export default function guide(config: IGuiderConfig) {
         removeSvg();
         overlay?.querySelector('ug-close-button')?.removeEventListener('click', removeContainer);
         overlay?.querySelector(`#${nextBtnId}`)?.removeEventListener('click', next);
-        overlay?.querySelector(`#${prevBtnId}`)?.removeEventListener('click', prev);
+        //overlay?.querySelector(`#${prevBtnId}`)?.removeEventListener('click', prev);
+        removeDom(overlay.querySelector(`#${prevBtnId}`));
         overlay?.querySelector(`#${selectNavId}`)?.removeEventListener('change', nav);
         window.removeEventListener('resize', onResize);
         document.body.removeChild(overlay);
