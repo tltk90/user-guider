@@ -51,5 +51,6 @@ options is an object with the following properties:
 |:------------:	|:-------:	|-------------------------------------------------------------------------------------------------------------------------------------------------------------------	|
 |      rtl     	| boolean 	| render this guide as rtl.<br>default false.                                                                                                                       	|
 | buttonsTitle 	|  object 	| define the navigation button text:<br>{<br>next: string, default 'Next'<br>back: string, default 'Back'<br>done: string, default 'Done'<br>skip: string, default 'Skip'<br>} 	|
+| buttonsTheme  | string    | define the style of the navigation buttons <br> possible values: 'round', 'solid' <br> default 'round'.                                                                       |  
 |    colors    	| object  	| change the color of the container:<br>{<br>background: css-color, default 'white'<br>text: css-color, default 'black'<br>}                                                   	|
 |  animation  	| string  	| define the animation on step navigation, <br>possible values 'fade', 'slide', 'none'<br> default 'fade'                                                    	|

@@ -6,12 +6,12 @@ const prevBtnId = 'prevBtn';
 const nextBtnId = 'nextBtn';
 const selectNavId = 'selectNav';
 const getContainer = () => document.getElementById(containerId);
-enum animationKey {
+export enum animationKey {
     none = 'none',
     fade = 'fade',
     slide = 'slide'
 }
-enum buttonThemeKey {
+export enum buttonsThemeKey {
     solid = 'solid',
     round = 'round'
 }
@@ -29,7 +29,7 @@ export interface IGuiderOptions {
         done: string;
         skip: string;
     },
-    buttonTheme: buttonThemeKey;
+    buttonsTheme: buttonsThemeKey;
     colors: {
         background: string;
         text: string;
@@ -49,7 +49,7 @@ const defaultOptions: Partial<IGuiderOptions> = {
         done: 'Done',
         skip: 'Skip'
     },
-    buttonTheme: buttonThemeKey.round,
+    buttonsTheme: buttonsThemeKey.round,
     animation: animationKey.fade
 };
 export default function guide(config: IGuiderConfig) {
@@ -57,7 +57,7 @@ export default function guide(config: IGuiderConfig) {
     const WINDOW_HEIGHT = () => document.body.clientHeight;
     const options = Object.assign({}, config.options);
     const ANIMATE_TIME = options.animation === animationKey.none ? 0 : 500;
-    checkIfAnimationIsValid();
+    assert();
     let configIndex = 0;
     let configCount = config.elements.length - 1;
     let currentElement;
@@ -164,7 +164,7 @@ export default function guide(config: IGuiderConfig) {
     }
     function createNavigatorContainer() {
         const buttons = document.createElement('div');
-        buttons.classList.add('ug-container-navigator', options.buttonTheme || defaultOptions.buttonTheme);
+        buttons.classList.add('ug-container-navigator', options.buttonsTheme || defaultOptions.buttonsTheme);
         const prevBtn = document.createElement('div');
         prevBtn.setAttribute('id', prevBtnId);
         prevBtn.classList.add('clickable');
@@ -219,10 +219,16 @@ export default function guide(config: IGuiderConfig) {
         document.body.removeChild(overlay);
     }
 
-    function checkIfAnimationIsValid() {
+    function assert() {
         if(options.animation) {
             if(Object.keys(animationKey).indexOf(options.animation) === -1) {
-                throw new UserGuiderError('animation must be one of ' + Object.keys(animationKey).join(', '))
+                throw new UserGuiderError('animation must be one of [' + Object.keys(animationKey).join(', ') + ' ]')
+            }
+        }
+
+        if(options.buttonsTheme) {
+            if(Object.keys(buttonsThemeKey).indexOf(options.buttonsTheme) === -1) {
+                throw new UserGuiderError('buttonsTheme must be one of [' + Object.keys(buttonsThemeKey).join(', ') + ' ]')
             }
         }
 
