@@ -1,5 +1,5 @@
 const listenersMap = new Map<any, any[]>();
-export function createDom(type: keyof HTMLElementTagNameMap, id?: string | string[], classes?: string[], listeners?: {type: any, fn: any}[]) {
+export function createDom(type: keyof HTMLElementTagNameMap, id?: string | string[], classes?: string[], children?: HTMLElement[], listeners?: {type: any, fn: any}[]) {
 	if(Array.isArray(id)) {
 		classes = id;
 		id = undefined;
@@ -11,6 +11,10 @@ export function createDom(type: keyof HTMLElementTagNameMap, id?: string | strin
 
 	if(classes) {
 		dom.classList.add(...classes);
+	}
+
+	if(children) {
+		children.forEach( (child) => dom.appendChild(child) )
 	}
 
 	if(listeners) {

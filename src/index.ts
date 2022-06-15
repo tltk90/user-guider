@@ -1,47 +1,14 @@
 import UserGuiderError from './error';
 import { createSvg, removeSvg } from './svgCreator';
 import { createDom, removeDom } from './helpers';
+import { animationKey, buttonThemeKey, IGuiderConfig, IGuiderOptions } from './models';
 
 const containerId = 'ug-main-overlay-container';
 const prevBtnId = 'prevBtn';
 const nextBtnId = 'nextBtn';
 const selectNavId = 'selectNav';
 const getContainer = () => document.getElementById(containerId);
-enum animationKey {
-    none = 'none',
-    fade = 'fade',
-    slide = 'slide'
-}
-enum buttonThemeKey {
-    solid = 'solid',
-    round = 'round'
-}
-export interface IElementConfig {
-    name?: string;
-    text: string;
-    title?: string;
-}
-export interface IGuiderOptions {
-    rtl: boolean;
-    font: string;
-    buttonsTitle: {
-        next: string;
-        back: string;
-        done: string;
-        skip: string;
-    },
-    buttonsTheme: buttonThemeKey;
-    colors: {
-        background: string;
-        text: string;
-    }
-    animation: animationKey
-}
-export interface IGuiderConfig {
-    elements: Array<IElementConfig>,
-    options: IGuiderOptions
 
-}
 
 const defaultOptions: Partial<IGuiderOptions> = {
     buttonsTitle: {
@@ -66,13 +33,13 @@ export default function guide(config: IGuiderConfig) {
     let guiderTitle: HTMLSpanElement;
     let guiderText: HTMLSpanElement;
     initializeElement();
-    setColorsValue();
+    setVarValue();
     const setButtonState = () => {
         const prevBtn = document.getElementById(prevBtnId) as HTMLDivElement;
         const nextBtn = document.getElementById(nextBtnId) as HTMLDivElement;
         const select = document.getElementById(selectNavId) as HTMLSelectElement;
         const setButton = (btn: HTMLDivElement, title: string) => {
-            (btn.children[0] as HTMLSpanElement).innerText = title.substring(0, 6) + `${title.length > 6 ? '...' : ''}`;
+            (btn.children[0] as HTMLSpanElement).innerText = title;
             btn.setAttribute('title', title)
         };
         select.value = `${configIndex}`;
@@ -121,40 +88,20 @@ export default function guide(config: IGuiderConfig) {
         step();
     }
     function initializeElement() {
-        // init overlay
-        const overlay = document.createElement('div');
-        overlay.setAttribute('id', containerId);
-        overlay.setAttribute('class', 'ug-overlay');
-        // init close button
-        const close = document.createElement('div');
-        close.setAttribute('class', 'ug-close-button');
-        close.addEventListener('click', removeContainer);
-        // init guider container
-        guiderContainer = document.createElement('div');
-        guiderContainer.setAttribute('class', 'ug-container');
-        guiderTitle = document.createElement('span');
-        guiderTitle.setAttribute('class', 'ug-container-title');
-        guiderText = document.createElement('span');
-        guiderText.setAttribute('class', 'ug-container-text');
+        guiderTitle = createDom('span', null, ['ug-container-title']);
+        guiderText = createDom('span', null, ['ug-container-text']);
+        const close = createDom('div', null, ['ug-close-button', options.rtl ? 'rtl': undefined].filter(Boolean), null,[{type: 'click', fn: removeContainer}]);
         const buttons = createNavigatorContainer();
-        guiderContainer.appendChild(close);
-        guiderContainer.appendChild(guiderTitle);
-        guiderContainer.appendChild(guiderText);
-        guiderContainer.appendChild(buttons);
+        guiderContainer = createDom('div', null, ['ug-container'], [close, guiderTitle, guiderText, buttons]) as HTMLDivElement;
+        const overlay = createDom('div', containerId, ['ug-overlay'], [guiderContainer]);
         if(options.rtl) {
             guiderContainer.setAttribute('dir', 'rtl');
-            close.classList.add('rtl');
-            buttons.classList.add('rtl');
-        }
-        if(options.font) {
-            overlay.style.fontFamily = options.font;
         }
         document.body.appendChild(overlay);
-        overlay.appendChild(guiderContainer);
     }
 
-    function setColorsValue() {
-        const { colors } = options;
+    function setVarValue() {
+        const { colors, font } = options;
         const varContainer: any = document.getElementById(containerId);
         if(colors?.background) {
             varContainer.style.setProperty('--background', colors.background);
@@ -162,35 +109,26 @@ export default function guide(config: IGuiderConfig) {
         if(colors?.text) {
             varContainer.style.setProperty('--text', colors.text);
         }
+
+        if(font) {
+            varContainer.style.setProperty('--fontFamily', font);
+        }
     }
     function createNavigatorContainer() {
-        const buttons = createDom('div', ['ug-container-navigator', options.buttonsTheme || defaultOptions.buttonsTheme]);
-        const prevBtn = createDom('div', prevBtnId, ['clickable'], [{type: 'click', fn: prev}]);
-        const nextBtn = createDom('div', nextBtnId, ['clickable']);
-        const navBtn = createDom('div', selectNavId);
-        const spanPrev = document.createElement('span');
-        const spanNext = document.createElement('span');
-        const select = document.createElement('select');
-        select.setAttribute('id', selectNavId);
+        const spanPrev = createDom('span');
+        const spanNext = createDom('span');
+        const select = createDom('select', selectNavId) as HTMLSelectElement;
         for(let i = 1; i <= config.elements.length; i++ ) {
-            const o = document.createElement('option');
+            const o = createDom('option') as HTMLOptionElement;
             o.setAttribute('value', `${i - 1}`);
             o.text = `${i}`;
             select.add(o);
         }
-        spanNext.innerText = 'Next';
-        spanPrev.innerText = 'Back';
-        navBtn.appendChild(select);
-        prevBtn.appendChild(spanPrev);
-        nextBtn.appendChild(spanNext);
-        // prevBtn.addEventListener('click', prev);
-        nextBtn.addEventListener('click', next);
-        select.addEventListener('change', nav);
-        buttons.appendChild(prevBtn);
-        buttons.appendChild(navBtn);
-        buttons.appendChild(nextBtn);
+        const prevBtn = createDom('div', prevBtnId, ['clickable'], [spanPrev], [{type: 'click', fn: prev}]);
+        const nextBtn = createDom('div', nextBtnId, ['clickable'], [spanNext], [{type: 'click', fn: next}]);
+        const navBtn = createDom('div', null, null, [select]);
+        const buttons = createDom('div', ['ug-container-navigator', options.buttonsTheme || defaultOptions.buttonsTheme], null, [prevBtn, navBtn, nextBtn]);
         return buttons;
-
     }
 
     function getRect() {
@@ -207,11 +145,10 @@ export default function guide(config: IGuiderConfig) {
     function removeContainer() {
         const overlay = getContainer();
         removeSvg();
-        overlay?.querySelector('ug-close-button')?.removeEventListener('click', removeContainer);
-        overlay?.querySelector(`#${nextBtnId}`)?.removeEventListener('click', next);
-        //overlay?.querySelector(`#${prevBtnId}`)?.removeEventListener('click', prev);
+        removeDom(overlay?.querySelector('.ug-close-button'));
+        removeDom(overlay?.querySelector(`#${nextBtnId}`));
         removeDom(overlay.querySelector(`#${prevBtnId}`));
-        overlay?.querySelector(`#${selectNavId}`)?.removeEventListener('change', nav);
+        removeDom(overlay?.querySelector(`#${selectNavId}`));
         window.removeEventListener('resize', onResize);
         document.body.removeChild(overlay);
     }
@@ -283,7 +220,7 @@ export default function guide(config: IGuiderConfig) {
                 setButtonState();
                 guiderContainer.style.visibility = 'visible';
                 if(isNotNoneAnimation) {
-                    guiderContainer.style.animation = `${options.animation || defaultOptions.animation}-in ${ANIMATE_TIME}ms forwards`;
+                    guiderContainer.style.animation = `${options.animation || defaultOptions.animation}-in 0ms forwards`;
                 }
             }, ANIMATE_TIME);
         }

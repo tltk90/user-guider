@@ -1,6 +1,13 @@
+.ug-bubble {
+  content:'';
+  display:block;
+  width:0;
+  height:0;
+  position:absolute;
+}
 .ug-overlay {
-  --background: white;
-  --text: black;
+  --background: #000000aa;
+  --text: #f9f9f9;
   --border-radius: 10px;
   --fontFamily: Segoe UI, serif;
   width: 100vw;
@@ -23,6 +30,7 @@
     justify-content: center;
     width: fit-content;
     height: fit-content;
+    text-align: center;
     max-width: 350px;
     max-height: 250px;
     min-width: 250px;
@@ -50,7 +58,7 @@
   .ug-container-text {
     margin-top: 5px;
     margin-bottom: 10px;
-    font-size: 1.3rem;
+    font-size: 1.1rem;
     overflow-y: auto;
     max-height: 100px;
     word-break: break-word;
@@ -85,8 +93,9 @@
   .ug-container-navigator {
     display: flex;
     flex-direction: row;
-    width: 80%;
-    height: 1.5em;
+    width: 90%;
+    min-height: 1.5rem;
+    height: fit-content;
     justify-content: space-between;
     color: inherit;
 
@@ -94,15 +103,11 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: flex-end;
+      justify-content: center;
       cursor: pointer;
       border: 1px solid var(--text);
-      font-size: 1.1em;
-      font-style: italic;
-
-      span {
-        letter-spacing: 1px;
-      }
+      font-size: 0.9em;
+      font-weight: 400;
 
       &.clickable {
         flex: 3;
@@ -181,55 +186,39 @@
 
 
   .ug-bubble-top::before {
-    content:'';
-    display:block;
-    width:0;
-    height:0;
-    position:absolute;
-    border-left: 10px solid transparent;
-    border-right: 10px solid transparent;
+    &:extend(.ug-bubble);
+    border-left: 15px solid transparent;
+    border-right: 15px solid transparent;
     border-bottom: 10px solid var(--background);
-    top: -10px;
+    top: -15px;
     left: 5px;
   }
 
 
   .ug-bubble-bottom::before {
-    content:'';
-    display:block;
-    width:0;
-    height:0;
-    position:absolute;
-    border-top: 10px solid var(--background);
-    border-left: 10px solid transparent;
+    &:extend(.ug-bubble);
+    border-top: 15px solid var(--background);
+    border-left: 15px solid transparent;
     border-right: 10px solid transparent;
     right: 5px;
-    bottom: -10px;
+    bottom: -15px;
   }
 
   .ug-bubble-bottom-left::before {
-    content:'';
-    display:block;
-    width:0;
-    height:0;
-    position:absolute;
-    border-top: 10px solid var(--background);
-    border-left: 10px solid transparent;
+    &:extend(.ug-bubble);
+    border-top: 15px solid var(--background);
+    border-left: 15px solid transparent;
     border-right: 10px solid transparent;
     left: 5px;
-    bottom: -10px;
+    bottom: -15px;
   }
 
   .ug-bubble-top-right::before {
-    content:'';
-    display:block;
-    width:0;
-    height:0;
-    position:absolute;
-    border-left: 10px solid transparent;
-    border-right: 10px solid transparent;
+    &:extend(.ug-bubble);
+    border-left: 15px solid transparent;
+    border-right: 15px solid transparent;
     border-bottom: 10px solid var(--background);
-    top: -10px;
+    top: -15px;
     right: 5px;
   }
 }
