@@ -51,6 +51,6 @@ options is an object with the following properties:
 |:------------:	|:-------:	|-------------------------------------------------------------------------------------------------------------------------------------------------------------------	|
 |      rtl     	| boolean 	| render this guide as rtl.<br>default false.                                                                                                                       	|
 | buttonsTitle 	|  object 	| define the navigation button text:<br>{<br>next: string, default 'Next'<br>back: string, default 'Back'<br>done: string, default 'Done'<br>skip: string, default 'Skip'<br>} 	|
-|    colors    	| object  	| change the color of the container:<br>{<br>background: css-color, default 'white'<br>text: css-color, default 'black'<br>}                                                   	|
-|  animation  	| object  	| define the animation on step navigation, <br>{<br>type: possible values 'fade', 'slide', 'none';<br>duration: number, default 500<br>}<br>if type is 'none' duration is 0                                                   	|
+|    colors    	| object  	| change the color of the container:<br>{<br>background: css-color, default '#000000aa'<br>text: css-color, default '#f9f9f9'<br>}                                                   	|
+|  animation  	| object  	| define the animation on step navigation, <br>{<br>type: possible values 'fade', 'slide', 'none';<br>duration: number, default 1000<br>}<br>if type is 'none' duration is 0                                                   	|
 | font | string | define the font family for the guider |

@@ -20,7 +20,7 @@ const defaultOptions: Partial<IGuiderOptions> = {
 	buttonsTheme: buttonThemeKey.round,
 	animation: {
 		type: animationKey.fade,
-		duration: 500
+		duration: 1000
 	}
 };
 export default function guide(config: IGuiderConfig) {
@@ -165,6 +165,10 @@ export default function guide(config: IGuiderConfig) {
 		}
 
 	}
+
+	function getAnimationString(animationType: string): string {
+		return `${ animationType } ${ ANIMATE_TIME }ms ease-in-out 0s 1 forwards`
+	}
 	// main function
 	function showGuide() {
 		currentElement = Object.assign({}, config.elements[configIndex]);
@@ -188,9 +192,9 @@ export default function guide(config: IGuiderConfig) {
 		}
 		function animate() {
 			if(isNotNoneAnimation) {
-				guiderContainer.style.animation = `${ options.animation || defaultOptions.animation }-out ${ ANIMATE_TIME }ms forwards`;
+				guiderContainer.style.animation = getAnimationString(`${options.animation.type || defaultOptions.animation.type }-out`);
 			}
-			setTimeout(() => {
+			requestAnimationFrame(() => {
 				clearBubbleClass(guiderContainer);
 				removeSvg();
 				getContainer().appendChild(svg);
@@ -223,9 +227,9 @@ export default function guide(config: IGuiderConfig) {
 				setButtonState();
 				guiderContainer.style.visibility = 'visible';
 				if(isNotNoneAnimation) {
-					guiderContainer.style.animation = `${options.animation || defaultOptions.animation}-in 0ms forwards`;
+					guiderContainer.style.animation = getAnimationString(`${options.animation.type || defaultOptions.animation.type}-in`);
 				}
-			}, ANIMATE_TIME);
+			});
 		}
 		animate();
 	}
