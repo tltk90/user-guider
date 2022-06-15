@@ -26,7 +26,10 @@ export interface IGuiderOptions {
 		background: string;
 		text: string;
 	}
-	animation: animationKey
+	animation: {
+		type: animationKey,
+		duration: number
+	}
 }
 export interface IGuiderConfig {
 	elements: Array<IElementConfig>,
