@@ -38,10 +38,11 @@ elements is an array of objects with the following properties:
 
 | property | require |  type  | description                                                                                                                     |
 |:--------:|:-------:|:------:|---------------------------------------------------------------------------------------------------------------------------------|
-|   name   |  false  | string | a css selector of the dom we want the guide window will be near to.<br> if not provide the guide window will place in the center. |
+|   element   |  false  | string | a css selector of the dom we want the guide window will be near to.<br> if not provide the guide window will place in the center. |
 |   title  |  false  | string | the title for this step                                                                                                         |
 |   text   |   true  | string | the description on this element                                                                                                 |                                                                                                                               |
-
+| position | false | 'center' &verbar; 'element' | the position of the guider, default to element. |
+ 
 ## options
 * require: false
 

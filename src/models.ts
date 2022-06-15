@@ -7,10 +7,15 @@ export enum buttonThemeKey {
 	solid = 'solid',
 	round = 'round'
 }
+export enum ElementPosition {
+	center = 'center',
+	element = 'element'
+}
 export interface IElementConfig {
-	name?: string;
+	element?: string;
 	text: string;
 	title?: string;
+	position?: ElementPosition
 }
 export interface IGuiderOptions {
 	rtl: boolean;

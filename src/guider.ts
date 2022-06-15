@@ -1,7 +1,7 @@
 import UserGuiderError from './error';
 import { createSvg, removeSvg } from './svgCreator';
 import { createDom, removeDom } from './helpers';
-import { animationKey, buttonThemeKey, IGuiderConfig, IGuiderOptions } from './models';
+import { animationKey, buttonThemeKey, ElementPosition, IGuiderConfig, IGuiderOptions } from './models';
 
 const containerId = 'ug-main-overlay-container';
 const prevBtnId = 'prevBtn';
@@ -171,11 +171,11 @@ export default function guide(config: IGuiderConfig) {
 	}
 	// main function
 	function showGuide() {
-		currentElement = Object.assign({}, config.elements[configIndex]);
+		currentElement = Object.assign({position: ElementPosition.element}, config.elements[configIndex]);
 		if(!currentElement.text) {
 			throw new UserGuiderError("element must contain text attribute");
 		}
-		currentElement.target = currentElement.name ? document.querySelector(currentElement.name) : undefined;
+		currentElement.target = currentElement.element ? document.querySelector(currentElement.element) : undefined;
 		if(currentElement.target) {
 			currentElement.target.scrollIntoViewIfNeeded(true);
 		}
@@ -195,12 +195,10 @@ export default function guide(config: IGuiderConfig) {
 				guiderContainer.style.animation = getAnimationString(`${options.animation.type || defaultOptions.animation.type }-out`);
 			}
 			requestAnimationFrame(() => {
+				const isElementPosition = currentElement.target && currentElement.position === ElementPosition.element;
 				clearBubbleClass(guiderContainer);
 				removeSvg();
 				getContainer().appendChild(svg);
-				if(currentElement.target) {
-					guiderContainer.classList.add(classToBeAdded);
-				}
 				if(currentElement.title) {
 					guiderTitle.style.display = '';
 					guiderTitle.innerText = currentElement.title;
@@ -212,10 +210,11 @@ export default function guide(config: IGuiderConfig) {
 				let top;
 				let bottom;
 				let left;
-				if(currentElement.target) {
+				if(isElementPosition) {
 					top = onTop ? rect.bottom : undefined;
 					bottom = !onTop ? (WINDOW_HEIGHT() - rect.top) : undefined;
 					left = onLeft ? rect.x - (rect.width / 2): rect.x + (rect.width / 2) - guiderContainer.clientWidth;
+					guiderContainer.classList.add(classToBeAdded);
 				}
 				else {
 					top = (WINDOW_HEIGHT() / 2) - (guiderContainer.clientHeight / 2);
