@@ -1,0 +1,15 @@
+# 2.0.0
+* you can define if you want the `guider` will be open around the element or in the center of the screen.
+<br> use the `position` option in the element object.
+* you can set the animation duration time.<br>set the animation.duration option to your desire time.
+* the default colors are change to `background:#000000aa;text:#f9f9f9`
+* you can draw a border around the element that be guided. using `options.color.elementBorder`  
+
+### Backwards incompatible changes
+#### `name` property is now `element`
+the `name` property that define the css-selector of the element is change to `element`.
+#### `animation` is now object
+the `animation` key in `options` is now object with `type` and `duration` properties.
+#### enum `animationKey` and `buttonThemeKey` changes.
+the enum of `animationKey` change to `AnimationType`<br>
+the enum of `buttonThemeKey` change to `ButtonsTheme`.

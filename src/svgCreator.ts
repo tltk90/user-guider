@@ -25,13 +25,13 @@ export function createSvg(x, y, width, height, right, bottom) {
     svg.appendChild(defs);
     const maskRect = createRect(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, 'currentColor');
     const clipPathRect = createRect(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, 'currentColor');
-    const disableRect = createRect(x, y, width, height, 'transparent');
+    const borderRect = buildBorderRect(x,y,width, height);
     maskRect.setAttributeNS(null, 'mask', `url(#${maskId})`);
     clipPathRect.setAttributeNS(null, 'clip-path', `url(#${clipId})`);
     clipPathRect.setAttributeNS(null, 'pointer-events', 'auto');
-    disableRect.setAttributeNS(null, 'pointer-events', 'none');
     svg.appendChild(maskRect);
     svg.appendChild(clipPathRect);
+    svg.appendChild(borderRect);
     svg.addEventListener('click', preventClicks);
     return svg;
 }
@@ -39,8 +39,8 @@ function createRect(x, y, width, height, color?) {
     const rect = createElement('rect');
     rect.setAttributeNS(null, 'x', x);
     rect.setAttributeNS(null, 'y', y);
-    rect.setAttributeNS(null, 'width', width);
-    rect.setAttributeNS(null, 'height', height);
+    rect.setAttributeNS(null, 'width', `${Math.max(0, width)}`);
+    rect.setAttributeNS(null, 'height', `${Math.max(0, height)}`);
     if(color) {
         rect.setAttributeNS(null, 'fill', color);
     }
@@ -65,7 +65,15 @@ function createDefs(x, y, width, height, right, bottom) {
     return defs;
 }
 
-
+function buildBorderRect(x, y, width, height) {
+    const fixX  = Math.max(0, x- 5);
+    const fixY = Math.max( 0, y - 5);
+    const fixW = fixX ? width + 10 : width;
+    const fixH = fixY ? height + 10 : height;
+    const rect = createRect(fixX, fixY, fixW, fixH, 'transparent');
+    rect.setAttributeNS(null, 'class', 'active-border');
+    return rect;
+}
 
 function createElement(name, id?) {
     const tag = document.createElementNS(ns, name);
