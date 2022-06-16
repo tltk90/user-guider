@@ -1,4 +1,4 @@
-import UserGuiderError from './error';
+import UserGuiderError, { assert } from './error';
 import { createSvg, removeSvg } from './svgCreator';
 import { createDom, removeDom } from './helpers';
 import { AnimationType, ButtonsTheme, ElementPosition, IGuiderConfig, IGuiderOptions } from './models';
@@ -27,9 +27,9 @@ export default function guide(config: IGuiderConfig) {
 	const WINDOW_WIDTH = () => document.body.clientWidth;
 	const WINDOW_HEIGHT = () => document.body.clientHeight;
 	const options = Object.assign({}, config.options);
+	assert(options);
 	const ANIMATE_TIME = options.animation.type === AnimationType.none ? 0 : (options.animation.duration ? options.animation.duration : defaultOptions.animation.duration);
 	const isNotNoneAnimation = options.animation.type !== AnimationType.none;
-	checkIfAnimationIsValid();
 	let configIndex = 0;
 	let configCount = config.elements.length - 1;
 	let currentElement;
@@ -134,7 +134,7 @@ export default function guide(config: IGuiderConfig) {
 		const prevBtn = createDom('div', prevBtnId, ['clickable'], [spanPrev], [{type: 'click', fn: prev}]);
 		const nextBtn = createDom('div', nextBtnId, ['clickable'], [spanNext], [{type: 'click', fn: next}]);
 		const navBtn = createDom('div', null, null, [select]);
-		const buttons = createDom('div', ['ug-container-navigator', options.buttonsTheme || defaultOptions.buttonsTheme], null, [prevBtn, navBtn, nextBtn]);
+		const buttons = createDom('div', null, ['ug-container-navigator', options.buttonsTheme || defaultOptions.buttonsTheme, options.rtl ? 'rtl' : null].filter(Boolean), [prevBtn, navBtn, nextBtn]);
 		return buttons;
 	}
 
@@ -158,15 +158,6 @@ export default function guide(config: IGuiderConfig) {
 		removeDom(overlay?.querySelector(`#${selectNavId}`));
 		window.removeEventListener('resize', onResize);
 		document.body.removeChild(overlay);
-	}
-
-	function checkIfAnimationIsValid() {
-		if(options.animation) {
-			if(Object.keys(AnimationType).indexOf(options.animation.type) === -1) {
-				throw new UserGuiderError('animation must be one of ' + Object.keys(AnimationType).join(', '))
-			}
-		}
-
 	}
 
 	// main function
