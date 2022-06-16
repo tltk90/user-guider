@@ -20,7 +20,7 @@ const defaultOptions: Partial<IGuiderOptions> = {
 	buttonsTheme: ButtonsTheme.round,
 	animation: {
 		type: AnimationType.fade,
-		duration: 1000
+		duration: 500
 	}
 };
 export default function guide(config: IGuiderConfig) {

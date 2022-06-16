@@ -54,5 +54,5 @@ options is an object with the following properties:
 | buttonsTitle 	|  object 	| define the navigation button text:<br>{<br>next: string, default 'Next'<br>back: string, default 'Back'<br>done: string, default 'Done'<br>skip: string, default 'Skip'<br>} 	|
 | buttonsTheme  | string    | define the style of the navigation buttons <br> possible values: 'round', 'solid' <br> default 'round'.                                                                       |
 |    colors    	| object  	| change the color of the container:<br>{<br>background: css-color, default '#000000aa'<br>text: css-color, default '#f9f9f9'<br>elementBorder: css-color, default 'transparent'}                                                   	|
-|  animation  	| object  	| define the animation on step navigation, <br>{<br>type: possible values 'fade', 'slide', 'none';<br>duration: number, default 1000<br>}<br>if type is 'none' duration is 0                                                   	|
+|  animation  	| object  	| define the animation on step navigation, <br>{<br>type: possible values 'fade', 'slide', 'none';<br>duration: number, default 500<br>}<br>if type is 'none' duration is 0                                                   	|
 | font | string | define the font family for the guider |
