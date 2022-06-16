@@ -10,3 +10,6 @@
 the `name` property that define the css-selector of the element is change to `element`.
 #### `animation` is now object
 the `animation` key in `options` is now object with `type` and `duration` properties.
+#### enum `animationKey` and `buttonThemeKey` changes.
+the enum of `animationKey` change to `AnimationType`<br>
+the enum of `buttonThemeKey` change to `ButtonsTheme`.

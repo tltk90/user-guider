@@ -1,7 +1,7 @@
 import UserGuiderError from './error';
 import { createSvg, removeSvg } from './svgCreator';
 import { createDom, removeDom } from './helpers';
-import { animationKey, buttonThemeKey, ElementPosition, IGuiderConfig, IGuiderOptions } from './models';
+import { AnimationType, ButtonsTheme, ElementPosition, IGuiderConfig, IGuiderOptions } from './models';
 
 const containerId = 'ug-main-overlay-container';
 const prevBtnId = 'prevBtn';
@@ -17,9 +17,9 @@ const defaultOptions: Partial<IGuiderOptions> = {
 		done: 'Done',
 		skip: 'Skip'
 	},
-	buttonsTheme: buttonThemeKey.round,
+	buttonsTheme: ButtonsTheme.round,
 	animation: {
-		type: animationKey.fade,
+		type: AnimationType.fade,
 		duration: 1000
 	}
 };
@@ -27,8 +27,8 @@ export default function guide(config: IGuiderConfig) {
 	const WINDOW_WIDTH = () => document.body.clientWidth;
 	const WINDOW_HEIGHT = () => document.body.clientHeight;
 	const options = Object.assign({}, config.options);
-	const ANIMATE_TIME = options.animation.type === animationKey.none ? 0 : (options.animation.duration ? options.animation.duration : defaultOptions.animation.duration);
-	const isNotNoneAnimation = options.animation.type !== animationKey.none;
+	const ANIMATE_TIME = options.animation.type === AnimationType.none ? 0 : (options.animation.duration ? options.animation.duration : defaultOptions.animation.duration);
+	const isNotNoneAnimation = options.animation.type !== AnimationType.none;
 	checkIfAnimationIsValid();
 	let configIndex = 0;
 	let configCount = config.elements.length - 1;
@@ -114,7 +114,7 @@ export default function guide(config: IGuiderConfig) {
 			varContainer.style.setProperty('--text', colors.text);
 		}
 		if(colors?.elementBorder) {
-			varContainer.style.setProperty('--elementBorder', colors.elementBorder);
+			varContainer.style.setProperty('--activeElementBorder', colors.elementBorder);
 		}
 
 		if(font) {
@@ -162,8 +162,8 @@ export default function guide(config: IGuiderConfig) {
 
 	function checkIfAnimationIsValid() {
 		if(options.animation) {
-			if(Object.keys(animationKey).indexOf(options.animation.type) === -1) {
-				throw new UserGuiderError('animation must be one of ' + Object.keys(animationKey).join(', '))
+			if(Object.keys(AnimationType).indexOf(options.animation.type) === -1) {
+				throw new UserGuiderError('animation must be one of ' + Object.keys(AnimationType).join(', '))
 			}
 		}
 

@@ -1,9 +1,9 @@
-export enum animationKey {
+export enum AnimationType {
 	none = 'none',
 	fade = 'fade',
 	slide = 'slide'
 }
-export enum buttonThemeKey {
+export enum ButtonsTheme {
 	solid = 'solid',
 	round = 'round'
 }
@@ -26,14 +26,14 @@ export interface IGuiderOptions {
 		done: string;
 		skip: string;
 	},
-	buttonsTheme: buttonThemeKey;
+	buttonsTheme: ButtonsTheme;
 	colors: {
 		background: string;
 		text: string;
 		elementBorder: string;
 	}
 	animation: {
-		type: animationKey,
+		type: AnimationType,
 		duration: number
 	}
 }
