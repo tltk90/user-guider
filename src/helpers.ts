@@ -1,5 +1,5 @@
 const listenersMap = new Map<any, any[]>();
-export function createDom(type: keyof HTMLElementTagNameMap, id?: string | string[], classes?: string[], children?: HTMLElement[], listeners?: {type: any, fn: any}[]) {
+export function createDom(type: keyof HTMLElementTagNameMap, id?: string, classes?: string[], children?: HTMLElement[], listeners?: {type: any, fn: any}[]) {
 	const dom: HTMLElement = document.createElement(type);
 	if(id && typeof id === 'string') {
 		dom.setAttribute('id', id);
