@@ -9,7 +9,7 @@
     "build:css": "lessc styles/ug.less styles/ug.css",
     "build": "tsc",
     "predeploy": "npm run build",
-    "deploy": "npm run publish",
+    "deploy": "npm publish",
     "deploy:major": "npm version major && npm run deploy",
     "deploy:minor": "npm version minor && npm run deploy",
     "deploy:patch": "npm version patch && npm run deploy",
