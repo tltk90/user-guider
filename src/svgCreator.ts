@@ -29,7 +29,6 @@ export function createSvg(x, y, width, height, right, bottom) {
     maskRect.setAttributeNS(null, 'mask', `url(#${maskId})`);
     clipPathRect.setAttributeNS(null, 'clip-path', `url(#${clipId})`);
     clipPathRect.setAttributeNS(null, 'pointer-events', 'auto');
-    borderRect.setAttributeNS(null, 'class', 'active-border');
     svg.appendChild(maskRect);
     svg.appendChild(clipPathRect);
     svg.appendChild(borderRect);
@@ -71,7 +70,9 @@ function buildBorderRect(x, y, width, height) {
     const fixY = Math.max( 0, y - 5);
     const fixW = fixX ? width + 10 : width;
     const fixH = fixY ? height + 10 : height;
-    return createRect(fixX, fixY, fixW, fixH, 'transparent');
+    const rect = createRect(fixX, fixY, fixW, fixH, 'transparent');
+    rect.setAttributeNS(null, 'class', 'active-border');
+    return rect;
 }
 
 function createElement(name, id?) {
