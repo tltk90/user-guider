@@ -30,6 +30,7 @@ export interface IGuiderOptions {
 	colors: {
 		background: string;
 		text: string;
+		elementBorder: string;
 	}
 	animation: {
 		type: animationKey,

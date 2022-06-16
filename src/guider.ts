@@ -113,6 +113,9 @@ export default function guide(config: IGuiderConfig) {
 		if(colors?.text) {
 			varContainer.style.setProperty('--text', colors.text);
 		}
+		if(colors?.elementBorder) {
+			varContainer.style.setProperty('--elementBorder', colors.elementBorder);
+		}
 
 		if(font) {
 			varContainer.style.setProperty('--fontFamily', font);

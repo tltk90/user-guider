@@ -10,6 +10,7 @@
   --text: #f9f9f9;
   --border-radius: 10px;
   --fontFamily: Segoe UI, serif;
+  --activeElementBorder: transparent;
   width: 100vw;
   height: 100vh;
   position: fixed;
@@ -21,6 +22,11 @@
 
   #guider-svg {
     opacity: 0.5;
+
+    .active-border {
+      stroke: var(--activeElementBorder);
+      stroke-width: 2px;
+    }
   }
 
   .ug-container {

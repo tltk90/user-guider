@@ -25,13 +25,14 @@ export function createSvg(x, y, width, height, right, bottom) {
     svg.appendChild(defs);
     const maskRect = createRect(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, 'currentColor');
     const clipPathRect = createRect(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, 'currentColor');
-    const disableRect = createRect(x, y, width, height, 'transparent');
+    const borderRect = buildBorderRect(x,y,width, height);
     maskRect.setAttributeNS(null, 'mask', `url(#${maskId})`);
     clipPathRect.setAttributeNS(null, 'clip-path', `url(#${clipId})`);
     clipPathRect.setAttributeNS(null, 'pointer-events', 'auto');
-    disableRect.setAttributeNS(null, 'pointer-events', 'none');
+    borderRect.setAttributeNS(null, 'class', 'active-border');
     svg.appendChild(maskRect);
     svg.appendChild(clipPathRect);
+    svg.appendChild(borderRect);
     svg.addEventListener('click', preventClicks);
     return svg;
 }
@@ -65,7 +66,13 @@ function createDefs(x, y, width, height, right, bottom) {
     return defs;
 }
 
-
+function buildBorderRect(x, y, width, height) {
+    const fixX  = Math.max(0, x- 5);
+    const fixY = Math.max( 0, y - 5);
+    const fixW = fixX ? width + 10 : width;
+    const fixH = fixY ? height + 10 : height;
+    return createRect(fixX, fixY, fixW, fixH, 'transparent');
+}
 
 function createElement(name, id?) {
     const tag = document.createElementNS(ns, name);
