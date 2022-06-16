@@ -124,7 +124,7 @@ export default function guide(config: IGuiderConfig) {
 	function createNavigatorContainer() {
 		const spanPrev = createDom('span');
 		const spanNext = createDom('span');
-		const select = createDom('select', selectNavId) as HTMLSelectElement;
+		const select = createDom('select', selectNavId, null, null, [{type: 'change', fn: nav}]) as HTMLSelectElement;
 		for(let i = 1; i <= config.elements.length; i++ ) {
 			const o = createDom('option') as HTMLOptionElement;
 			o.setAttribute('value', `${i - 1}`);
@@ -169,9 +169,6 @@ export default function guide(config: IGuiderConfig) {
 
 	}
 
-	function getAnimationString(animationType: string): string {
-		return `${ animationType } ${ ANIMATE_TIME }ms ease-in-out 0s 1 forwards`
-	}
 	// main function
 	function showGuide() {
 		currentElement = Object.assign({position: ElementPosition.element}, config.elements[configIndex]);
@@ -193,46 +190,43 @@ export default function guide(config: IGuiderConfig) {
 		else {
 			classToBeAdded = onLeft ? 'ug-bubble-bottom-left': 'ug-bubble-bottom';
 		}
-		function animate() {
-			if(isNotNoneAnimation) {
-				guiderContainer.style.animation = getAnimationString(`${options.animation.type || defaultOptions.animation.type }-out`);
-			}
-			requestAnimationFrame(() => {
-				const isElementPosition = currentElement.target && currentElement.position === ElementPosition.element;
-				clearBubbleClass(guiderContainer);
-				removeSvg();
-				getContainer().appendChild(svg);
-				if(currentElement.title) {
-					guiderTitle.style.display = '';
-					guiderTitle.innerText = currentElement.title;
-				}
-				else {
-					guiderTitle.style.display = 'none'
-				}
-				guiderText.innerText = currentElement.text;
-				let top;
-				let bottom;
-				let left;
-				if(isElementPosition) {
-					top = onTop ? rect.bottom : undefined;
-					bottom = !onTop ? (WINDOW_HEIGHT() - rect.top) : undefined;
-					left = onLeft ? rect.x - (rect.width / 2): rect.x + (rect.width / 2) - guiderContainer.clientWidth;
-					guiderContainer.classList.add(classToBeAdded);
-				}
-				else {
-					top = (WINDOW_HEIGHT() / 2) - (guiderContainer.clientHeight / 2);
-					left = (WINDOW_WIDTH() / 2) - (guiderContainer.clientWidth / 2);
-				}
-				guiderContainer.style.top = top ? `${top}px` : '';
-				guiderContainer.style.bottom = bottom ? `${bottom}px` : '';
-				guiderContainer.style.left = `${left}px`;
-				setButtonState();
-				guiderContainer.style.visibility = 'visible';
-				if(isNotNoneAnimation) {
-					guiderContainer.style.animation = getAnimationString(`${options.animation.type || defaultOptions.animation.type}-in`);
-				}
-			});
+		if(isNotNoneAnimation) {
+			guiderContainer.style.animation = `${ options.animation.type || defaultOptions.animation }-out ${ ANIMATE_TIME }ms forwards`;
 		}
-		animate();
+		setTimeout(() => {
+			const isElementPosition = currentElement.target && currentElement.position === ElementPosition.element;
+			clearBubbleClass(guiderContainer);
+			if(currentElement.title) {
+				guiderTitle.style.display = '';
+				guiderTitle.innerText = currentElement.title;
+			}
+			else {
+				guiderTitle.style.display = 'none'
+			}
+			guiderText.innerText = currentElement.text;
+			let top;
+			let bottom;
+			let left;
+			if(isElementPosition) {
+				top = onTop ? rect.bottom : undefined;
+				bottom = !onTop ? (WINDOW_HEIGHT() - rect.top) : undefined;
+				left = onLeft ? rect.x - (rect.width / 2): rect.x + (rect.width / 2) - guiderContainer.clientWidth;
+				guiderContainer.classList.add(classToBeAdded);
+			}
+			else {
+				top = (WINDOW_HEIGHT() / 2) - (guiderContainer.clientHeight / 2);
+				left = (WINDOW_WIDTH() / 2) - (guiderContainer.clientWidth / 2);
+			}
+			guiderContainer.style.top = top ? `${top}px` : '';
+			guiderContainer.style.bottom = bottom ? `${bottom}px` : '';
+			guiderContainer.style.left = `${left}px`;
+			setButtonState();
+			guiderContainer.style.visibility = 'visible';
+			if(isNotNoneAnimation) {
+				guiderContainer.style.animation = `${options.animation.type || defaultOptions.animation}-in ${ANIMATE_TIME}ms forwards`;
+			}
+			removeSvg();
+			getContainer().appendChild(svg);
+		}, ANIMATE_TIME / 2);
 	}
 }

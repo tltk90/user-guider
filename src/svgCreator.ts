@@ -40,8 +40,8 @@ function createRect(x, y, width, height, color?) {
     const rect = createElement('rect');
     rect.setAttributeNS(null, 'x', x);
     rect.setAttributeNS(null, 'y', y);
-    rect.setAttributeNS(null, 'width', width);
-    rect.setAttributeNS(null, 'height', height);
+    rect.setAttributeNS(null, 'width', `${Math.max(0, width)}`);
+    rect.setAttributeNS(null, 'height', `${Math.max(0, height)}`);
     if(color) {
         rect.setAttributeNS(null, 'fill', color);
     }
