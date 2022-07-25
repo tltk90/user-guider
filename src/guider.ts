@@ -41,9 +41,9 @@ export default function guide(config: IGuiderConfig) {
 	const calcTransform = () => {
 		const elementRect = currentElement.target.getBoundingClientRect();
 		const leftOffset = (guiderContainer.offsetLeft + guiderContainer.offsetWidth) - WINDOW_WIDTH();
-		let topOffset = (guiderContainer.offsetTop + guiderContainer.offsetHeight) - WINDOW_HEIGHT() ;
+		const topOffset = (guiderContainer.offsetTop + guiderContainer.offsetHeight) - WINDOW_HEIGHT() ;
 
-		return `translate(-${leftOffset > 0 ? leftOffset : 0}px, -${topOffset > 0 ? topOffset + (WINDOW_HEIGHT() - elementRect.top) : 0}px)`;
+		return `translate(-${leftOffset > 0 ? leftOffset : 0}px, -${topOffset > 0 ? topOffset : 0}px)`;
 	};
 
 	const setButtonState = () => {
