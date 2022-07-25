@@ -38,6 +38,14 @@ export default function guide(config: IGuiderConfig) {
 	let guiderText: HTMLSpanElement;
 	initializeElement();
 	setVarValue();
+	const calcTransform = () => {
+		const elementRect = currentElement.target.getBoundingClientRect();
+		const leftOffset = (guiderContainer.offsetLeft + guiderContainer.offsetWidth) - WINDOW_WIDTH();
+		const topOffset = (guiderContainer.offsetTop + guiderContainer.offsetHeight) - WINDOW_HEIGHT() ;
+
+		return `translate(-${leftOffset > 0 ? leftOffset : 0}px, -${topOffset > 0 ? topOffset : 0}px)`;
+	};
+
 	const setButtonState = () => {
 		const prevBtn = document.getElementById(prevBtnId) as HTMLDivElement;
 		const nextBtn = document.getElementById(nextBtnId) as HTMLDivElement;
@@ -146,9 +154,6 @@ export default function guide(config: IGuiderConfig) {
 			return {x: 0, y: 0, width: 0, height: 0, right: 0, bottom: 0};
 		}
 	}
-	function clearBubbleClass(el) {
-		el.classList.remove('ug-bubble-bottom', 'ug-bubble-top', 'ug-bubble-bottom-left', 'ug-bubble-top-right');
-	}
 	function removeContainer() {
 		const overlay = getContainer();
 		removeSvg();
@@ -171,22 +176,13 @@ export default function guide(config: IGuiderConfig) {
 			currentElement.target.scrollIntoViewIfNeeded(true);
 		}
 		const rect = getRect();
-		const onTop = rect.y < WINDOW_HEIGHT() / 2;
-		const onLeft = rect.x < WINDOW_WIDTH() / 2;
+		const onTop = rect.y <= WINDOW_HEIGHT() / 2;
 		const svg = createSvg(rect.x, rect.y, rect.width, rect.height, rect.right, rect.bottom);
-		let classToBeAdded;
-		if(onTop) {
-			classToBeAdded = onLeft ? 'ug-bubble-top' : 'ug-bubble-top-right';
-		}
-		else {
-			classToBeAdded = onLeft ? 'ug-bubble-bottom-left': 'ug-bubble-bottom';
-		}
 		if(isNotNoneAnimation) {
 			guiderContainer.style.animation = `${ options.animation.type || defaultOptions.animation }-out ${ ANIMATE_TIME }ms forwards`;
 		}
 		setTimeout(() => {
 			const isElementPosition = currentElement.target && currentElement.position === ElementPosition.element;
-			clearBubbleClass(guiderContainer);
 			if(currentElement.title) {
 				guiderTitle.style.display = '';
 				guiderTitle.innerText = currentElement.title;
@@ -196,21 +192,19 @@ export default function guide(config: IGuiderConfig) {
 			}
 			guiderText.innerText = currentElement.text;
 			let top;
-			let bottom;
 			let left;
 			if(isElementPosition) {
-				top = onTop ? rect.bottom : undefined;
-				bottom = !onTop ? (WINDOW_HEIGHT() - rect.top) : undefined;
-				left = onLeft ? rect.x - (rect.width / 2): rect.x + (rect.width / 2) - guiderContainer.clientWidth;
-				guiderContainer.classList.add(classToBeAdded);
+				top = onTop ? rect.top + rect.height : rect.top - guiderContainer.clientHeight;
+				left = rect.left;
 			}
 			else {
 				top = (WINDOW_HEIGHT() / 2) - (guiderContainer.clientHeight / 2);
 				left = (WINDOW_WIDTH() / 2) - (guiderContainer.clientWidth / 2);
 			}
-			guiderContainer.style.top = top ? `${top}px` : '';
-			guiderContainer.style.bottom = bottom ? `${bottom}px` : '';
+			guiderContainer.style.top = `${top}px`;
 			guiderContainer.style.left = `${left}px`;
+			guiderContainer.style.transform = isElementPosition ? guiderContainer.style.transform = calcTransform() : '';
+
 			setButtonState();
 			guiderContainer.style.visibility = 'visible';
 			if(isNotNoneAnimation) {

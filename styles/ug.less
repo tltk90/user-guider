@@ -40,9 +40,9 @@
     max-width: 350px;
     max-height: 250px;
     min-width: 250px;
+    transition: transform .2s;
     background-color: var(--background);
     padding: 5px;
-    margin: 10px;
     z-index: 1;
     border-radius: 5px;
     position: fixed;
@@ -187,44 +187,6 @@
       content: "x";
       color: inherit;
     }
-  }
-
-
-  .ug-bubble-top::before {
-    &:extend(.ug-bubble);
-    border-left: 15px solid transparent;
-    border-right: 15px solid transparent;
-    border-bottom: 10px solid var(--background);
-    top: -15px;
-    left: 5px;
-  }
-
-
-  .ug-bubble-bottom::before {
-    &:extend(.ug-bubble);
-    border-top: 15px solid var(--background);
-    border-left: 15px solid transparent;
-    border-right: 10px solid transparent;
-    right: 5px;
-    bottom: -15px;
-  }
-
-  .ug-bubble-bottom-left::before {
-    &:extend(.ug-bubble);
-    border-top: 15px solid var(--background);
-    border-left: 15px solid transparent;
-    border-right: 10px solid transparent;
-    left: 5px;
-    bottom: -15px;
-  }
-
-  .ug-bubble-top-right::before {
-    &:extend(.ug-bubble);
-    border-left: 15px solid transparent;
-    border-right: 15px solid transparent;
-    border-bottom: 10px solid var(--background);
-    top: -15px;
-    right: 5px;
   }
 }
 
