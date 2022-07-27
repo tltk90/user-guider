@@ -1,3 +1,5 @@
+export const UG_MAIN_CLASS_NAME = 'ug-main-overlay';
+
 export enum AnimationType {
 	none = 'none',
 	fade = 'fade',
@@ -16,6 +18,8 @@ export interface IElementConfig {
 	text: string;
 	title?: string;
 	position?: ElementPosition
+	beforeGuide(): void;
+	afterGuide(element): void;
 }
 export interface IGuiderOptions {
 	rtl: boolean;
