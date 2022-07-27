@@ -1,9 +1,17 @@
 import UserGuiderError, { assert } from './error';
 import { createSvg, removeSvg } from './svgCreator';
 import { createDom, removeDom } from './helpers';
-import { AnimationType, ButtonsTheme, ElementPosition, IGuiderConfig, IGuiderOptions } from './models';
+import {
+	AnimationType,
+	ButtonsTheme,
+	ElementPosition,
+	IGuiderConfig,
+	IGuiderOptions,
+	UG_MAIN_CLASS_NAME,
+	UserGuiderEndEvent
+} from './models';
 
-const containerId = 'ug-main-overlay-container';
+const containerId = 'ug-main-overlay';
 const prevBtnId = 'prevBtn';
 const nextBtnId = 'nextBtn';
 const selectNavId = 'selectNav';
@@ -27,6 +35,7 @@ export default function guide(config: IGuiderConfig) {
 	const WINDOW_WIDTH = () => document.body.clientWidth;
 	const WINDOW_HEIGHT = () => document.body.clientHeight;
 	const options = Object.assign({}, config.options);
+	let afterGuideLastFn;
 	assert(options);
 	const ANIMATE_TIME = options.animation.type === AnimationType.none ? 0 : (options.animation.duration ? options.animation.duration : defaultOptions.animation.duration);
 	const isNotNoneAnimation = options.animation.type !== AnimationType.none;
@@ -39,7 +48,6 @@ export default function guide(config: IGuiderConfig) {
 	initializeElement();
 	setVarValue();
 	const calcTransform = () => {
-		const elementRect = currentElement.target.getBoundingClientRect();
 		const leftOffset = (guiderContainer.offsetLeft + guiderContainer.offsetWidth) - WINDOW_WIDTH();
 		const topOffset = (guiderContainer.offsetTop + guiderContainer.offsetHeight) - WINDOW_HEIGHT() ;
 
@@ -71,9 +79,8 @@ export default function guide(config: IGuiderConfig) {
 	const checkIfDone = () => configIndex < 0 || configIndex > configCount;
 	const onResize = () => showGuide();
 	window.addEventListener('resize', onResize);
-
 	// start
-	showGuide();
+	step();
 
 
 
@@ -82,7 +89,14 @@ export default function guide(config: IGuiderConfig) {
 		if(checkIfDone()) {
 			return removeContainer();
 		}
-		showGuide();
+		afterGuideLastFn = currentElement?.afterGuide?.bind(null, currentElement.target);
+		currentElement = Object.assign({position: ElementPosition.element}, config.elements[configIndex]);
+		if (currentElement.beforeGuide) {
+			setTimeout(currentElement.beforeGuide, 0);
+			setTimeout(showGuide, 0);
+		}else {
+			showGuide();
+		}
 	}
 
 	function next() {
@@ -105,7 +119,7 @@ export default function guide(config: IGuiderConfig) {
 		const close = createDom('div', null, ['ug-close-button', options.rtl ? 'rtl': undefined].filter(Boolean), null,[{type: 'click', fn: removeContainer}]);
 		const buttons = createNavigatorContainer();
 		guiderContainer = createDom('div', null, ['ug-container'], [close, guiderTitle, guiderText, buttons]) as HTMLDivElement;
-		const overlay = createDom('div', containerId, ['ug-overlay'], [guiderContainer]);
+		const overlay = createDom('div', containerId, [UG_MAIN_CLASS_NAME], [guiderContainer]);
 		if(options.rtl) {
 			guiderContainer.setAttribute('dir', 'rtl');
 		}
@@ -163,11 +177,16 @@ export default function guide(config: IGuiderConfig) {
 		removeDom(overlay?.querySelector(`#${selectNavId}`));
 		window.removeEventListener('resize', onResize);
 		document.body.removeChild(overlay);
+		if(config.onUserGuiderEnd) {
+			let endEvent = UserGuiderEndEvent.close;
+			if(configIndex < 0) endEvent = UserGuiderEndEvent.skip;
+			if(configIndex > configCount) endEvent = UserGuiderEndEvent.done;
+			config.onUserGuiderEnd(endEvent);
+		}
 	}
 
 	// main function
 	function showGuide() {
-		currentElement = Object.assign({position: ElementPosition.element}, config.elements[configIndex]);
 		if(!currentElement.text) {
 			throw new UserGuiderError("element must contain text attribute");
 		}
@@ -182,6 +201,9 @@ export default function guide(config: IGuiderConfig) {
 			guiderContainer.style.animation = `${ options.animation.type || defaultOptions.animation }-out ${ ANIMATE_TIME }ms forwards`;
 		}
 		setTimeout(() => {
+			if(afterGuideLastFn) {
+				afterGuideLastFn();
+			}
 			const isElementPosition = currentElement.target && currentElement.position === ElementPosition.element;
 			if(currentElement.title) {
 				guiderTitle.style.display = '';
@@ -201,8 +223,8 @@ export default function guide(config: IGuiderConfig) {
 				top = (WINDOW_HEIGHT() / 2) - (guiderContainer.clientHeight / 2);
 				left = (WINDOW_WIDTH() / 2) - (guiderContainer.clientWidth / 2);
 			}
-			guiderContainer.style.top = `${top}px`;
-			guiderContainer.style.left = `${left}px`;
+			guiderContainer.style.top = `${top > 0 ? top : '0'}px`;
+			guiderContainer.style.left = `${left > 0 ? left : '0'}px`;
 			guiderContainer.style.transform = isElementPosition ? guiderContainer.style.transform = calcTransform() : '';
 
 			setButtonState();
