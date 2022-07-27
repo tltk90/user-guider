@@ -1,5 +1,10 @@
 export const UG_MAIN_CLASS_NAME = 'ug-main-overlay';
 
+export enum UserGuiderEndEvent {
+	close = 'close',
+	skip = 'skip',
+	done = 'done'
+}
 export enum AnimationType {
 	none = 'none',
 	fade = 'fade',
@@ -29,20 +34,21 @@ export interface IGuiderOptions {
 		back: string;
 		done: string;
 		skip: string;
-	},
+	};
 	buttonsTheme: ButtonsTheme;
 	colors: {
 		background: string;
 		text: string;
 		elementBorder: string;
-	}
+	};
 	animation: {
 		type: AnimationType,
 		duration: number
-	}
+	};
 }
 export interface IGuiderConfig {
-	elements: Array<IElementConfig>,
-	options: IGuiderOptions
+	elements: Array<IElementConfig>;
+	options: IGuiderOptions;
+	onUserGuiderEnd(endEvent: UserGuiderEndEvent): void;
 
 }

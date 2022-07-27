@@ -7,7 +7,8 @@ import {
 	ElementPosition,
 	IGuiderConfig,
 	IGuiderOptions,
-	UG_MAIN_CLASS_NAME
+	UG_MAIN_CLASS_NAME,
+	UserGuiderEndEvent
 } from './models';
 
 const containerId = 'ug-main-overlay';
@@ -47,7 +48,6 @@ export default function guide(config: IGuiderConfig) {
 	initializeElement();
 	setVarValue();
 	const calcTransform = () => {
-		const elementRect = currentElement.target.getBoundingClientRect();
 		const leftOffset = (guiderContainer.offsetLeft + guiderContainer.offsetWidth) - WINDOW_WIDTH();
 		const topOffset = (guiderContainer.offsetTop + guiderContainer.offsetHeight) - WINDOW_HEIGHT() ;
 
@@ -177,6 +177,12 @@ export default function guide(config: IGuiderConfig) {
 		removeDom(overlay?.querySelector(`#${selectNavId}`));
 		window.removeEventListener('resize', onResize);
 		document.body.removeChild(overlay);
+		if(config.onUserGuiderEnd) {
+			let endEvent = UserGuiderEndEvent.close;
+			if(configIndex < 0) endEvent = UserGuiderEndEvent.skip;
+			if(configIndex > configCount) endEvent = UserGuiderEndEvent.done;
+			config.onUserGuiderEnd(endEvent);
+		}
 	}
 
 	// main function
