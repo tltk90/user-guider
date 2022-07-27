@@ -34,7 +34,7 @@ The config is an object, with the following properties
 ## elements
 * require: true
 
-elements is an array of objects with the following properties:
+elements is an `array` of `objects` with the following properties:
 
 | property | require |  type  | description                                                                                                                     |
 |:--------:|:-------:|:------:|---------------------------------------------------------------------------------------------------------------------------------|
@@ -42,11 +42,13 @@ elements is an array of objects with the following properties:
 |   title  |  false  | string | the title for this step                                                                                                         |
 |   text   |   true  | string | the description on this element                                                                                                 |                                                                                                                               |
 | position | false | 'center' &verbar; 'element' | the position of the guider, default to element. |
+| beforeGuide| false| function| a function that be called before this step will be run.|
+| afterGuide| false | function | a function that be called after this step in done, called with the current dom element if exist |
  
 ## options
 * require: false
 
-options is an object with the following properties:
+options is an `object` with the following properties:
 
 |   property   	|   type  	| description                                                                                                                                                       	|
 |:------------:	|:-------:	|-------------------------------------------------------------------------------------------------------------------------------------------------------------------	|
@@ -56,3 +58,12 @@ options is an object with the following properties:
 |    colors    	| object  	| change the color of the container:<br>{<br>background: css-color, default '#000000aa'<br>text: css-color, default '#f9f9f9'<br>elementBorder: css-color, default 'transparent'}                                                   	|
 |  animation  	| object  	| define the animation on step navigation, <br>{<br>type: possible values 'fade', 'slide', 'none';<br>duration: number, default 500<br>}<br>if type is 'none' duration is 0                                                   	|
 | font | string | define the font family for the guider |
+
+## onUserGuiderEnd
+* require: false
+
+a `function` that will be called when the guider is hide from the screen.
+the function will be called with an `event` argument according to why the guider is hide.
+* 'close' - if the user click the close button
+* 'skip' - if the user click the skip button
+* 'done' - if the use click the done button
