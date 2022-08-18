@@ -217,7 +217,7 @@ export default function guide(config: IGuiderConfig) {
 			}
 			guiderContainer.style.top = `${top > 0 ? top : '0'}px`;
 			guiderContainer.style.left = `${left > 0 ? left : '0'}px`;
-			guiderContainer.style.transform = isElementPosition ? guiderContainer.style.transform = calcTransform() : '';
+			guiderContainer.style.transform = isElementPosition ? calcTransform() : '';
 
 			setButtonState();
 			guiderContainer.style.visibility = 'visible';
