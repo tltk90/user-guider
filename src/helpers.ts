@@ -36,3 +36,14 @@ export function removeDom(dom: HTMLElement) {
 	listenersMap.delete(dom);
 	dom.parentElement.removeChild(dom);
 }
+
+export function getElementRect(element: Element | string) {
+	if(!element) {
+		return {top: 0, left: 0, width: 0, height: 0, right: 0, bottom: 0};
+	}
+	if(typeof element === 'string') {
+		element = document.querySelector(element);
+	}
+
+	return element.getBoundingClientRect();
+}
