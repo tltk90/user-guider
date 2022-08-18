@@ -1,6 +1,6 @@
 import UserGuiderError, { assert } from './error';
 import { createSvg, removeSvg } from './svgCreator';
-import { createDom, removeDom } from './helpers';
+import { createDom, getElementRect, removeDom } from './helpers';
 import {
 	AnimationType,
 	ButtonsTheme,
@@ -160,14 +160,6 @@ export default function guide(config: IGuiderConfig) {
 		return buttons;
 	}
 
-	function getRect() {
-		if(currentElement.target) {
-			return currentElement.target.getBoundingClientRect();
-		}
-		else {
-			return {x: 0, y: 0, width: 0, height: 0, right: 0, bottom: 0};
-		}
-	}
 	function removeContainer() {
 		const overlay = getContainer();
 		removeSvg();
@@ -194,9 +186,9 @@ export default function guide(config: IGuiderConfig) {
 		if(currentElement.target) {
 			currentElement.target.scrollIntoViewIfNeeded(true);
 		}
-		const rect = getRect();
-		const onTop = rect.y <= WINDOW_HEIGHT() / 2;
-		const svg = createSvg(rect.x, rect.y, rect.width, rect.height, rect.right, rect.bottom);
+		const rect = getElementRect(currentElement.target);
+		const onTop = rect.top <= WINDOW_HEIGHT() / 2;
+		const svg = createSvg(rect.left, rect.top, rect.width, rect.height, rect.right, rect.bottom);
 		if(isNotNoneAnimation) {
 			guiderContainer.style.animation = `${ options.animation.type || defaultOptions.animation }-out ${ ANIMATE_TIME }ms forwards`;
 		}
