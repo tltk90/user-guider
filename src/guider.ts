@@ -49,8 +49,7 @@ export default function guide(config: IGuiderConfig) {
 	setVarValue();
 	const calcTransform = () => {
 		const leftOffset = (guiderContainer.offsetLeft + guiderContainer.offsetWidth) - WINDOW_WIDTH();
-		const topOffset = (guiderContainer.offsetTop + guiderContainer.offsetHeight) - WINDOW_HEIGHT() ;
-
+		const topOffset = (guiderContainer.offsetTop + guiderContainer.offsetHeight) - WINDOW_HEIGHT();
 		return `translate(-${leftOffset > 0 ? leftOffset : 0}px, -${topOffset > 0 ? topOffset : 0}px)`;
 	};
 
@@ -217,7 +216,6 @@ export default function guide(config: IGuiderConfig) {
 			}
 			guiderContainer.style.top = `${top > 0 ? top : '0'}px`;
 			guiderContainer.style.left = `${left > 0 ? left : '0'}px`;
-			guiderContainer.style.transform = isElementPosition ? calcTransform() : '';
 
 			setButtonState();
 			guiderContainer.style.visibility = 'visible';
@@ -226,6 +224,12 @@ export default function guide(config: IGuiderConfig) {
 			}
 			removeSvg();
 			getContainer().appendChild(svg);
+			requestAnimationFrame(() => {
+				if(options.animation.type === AnimationType.slide) {
+					guiderContainer.style.animation = '';
+				}
+				guiderContainer.style.transform = isElementPosition ? calcTransform() : '';
+			})
 		}, ANIMATE_TIME / 2);
 	}
 }
