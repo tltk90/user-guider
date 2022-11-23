@@ -66,11 +66,7 @@ function createDefs(x, y, width, height, right, bottom) {
 }
 
 function buildBorderRect(x, y, width, height) {
-    const fixX  = Math.max(0, x- 5);
-    const fixY = Math.max( 0, y - 5);
-    const fixW = fixX ? width + 10 : width;
-    const fixH = fixY ? height + 10 : height;
-    const rect = createRect(fixX, fixY, fixW, fixH, 'transparent');
+    const rect = createRect(x, y, width, height, 'transparent');
     rect.setAttributeNS(null, 'class', 'active-border');
     return rect;
 }

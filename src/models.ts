@@ -19,7 +19,7 @@ export enum ElementPosition {
 	element = 'element'
 }
 export interface IElementConfig {
-	element?: string;
+	element?: string | Array<string>;
 	text: string;
 	title?: string;
 	position?: ElementPosition
@@ -51,4 +51,9 @@ export interface IGuiderConfig {
 	options: IGuiderOptions;
 	onUserGuiderEnd(endEvent: UserGuiderEndEvent): void;
 
+}
+
+export interface IGuideElement extends IElementConfig {
+	target: Array<Element>
+	pointerEvent?: string;
 }
