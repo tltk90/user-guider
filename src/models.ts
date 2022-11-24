@@ -54,6 +54,7 @@ export interface IGuiderConfig {
 }
 
 export interface IGuideElement extends IElementConfig {
-	target: Array<Element>
-	pointerEvent?: string;
+	element: Array<string>
+	target: Array<HTMLElement>;
+	pointerEvent?: Array<string>;
 }

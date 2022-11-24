@@ -1,16 +1,16 @@
 import UserGuiderError, { assert } from './error';
 import { createSvg, removeSvg } from './svgCreator';
-import { createDom, getElementRect, removeDom } from './helpers';
+import { createDom, getElementRect, preventClick, removeDom } from './helpers';
 import {
 	AnimationType,
 	ButtonsTheme,
 	ElementPosition,
-	IGuideElement,
 	IGuiderConfig,
 	IGuiderOptions,
 	UG_MAIN_CLASS_NAME,
 	UserGuiderEndEvent
 } from './models';
+import { GuiderElement } from './GuiderElement';
 
 const containerId = 'ug-main-overlay';
 const prevBtnId = 'prevBtn';
@@ -42,7 +42,7 @@ export default function guide(config: IGuiderConfig) {
 	const isNotNoneAnimation = options.animation.type !== AnimationType.none;
 	let configIndex = 0;
 	let configCount = config.elements.length - 1;
-	let currentElement: IGuideElement;
+	let currentElement: GuiderElement;
 	let guiderContainer: HTMLDivElement;
 	let guiderTitle: HTMLSpanElement;
 	let guiderText: HTMLSpanElement;
@@ -83,29 +83,24 @@ export default function guide(config: IGuiderConfig) {
 
 	// private functions
 	function step() {
+		currentElement?.afterGuide();
 		if (checkIfDone()) {
 			return removeContainer();
 		}
-		currentElement && unlock();
-		afterGuideLastFn = currentElement?.afterGuide?.bind(null, currentElement.target);
-
-		currentElement = Object.assign({
-			position: ElementPosition.element,
-			target: null
-		}, config.elements[configIndex]);
-		if (currentElement.beforeGuide) {
-			setTimeout(currentElement.beforeGuide, 0);
-		}
-
+		currentElement && currentElement.unlock();
+		currentElement = new GuiderElement(config.elements[configIndex]);
+		currentElement.beforeGuide();
 		requestAnimationFrame(showGuide);
 	}
 
-	function next() {
+	function next(e) {
+		preventClick(e);
 		configIndex++;
 		step();
 	}
 
-	function prev() {
+	function prev(e) {
+		preventClick(e);
 		configIndex--;
 		step();
 	}
@@ -168,7 +163,7 @@ export default function guide(config: IGuiderConfig) {
 	}
 
 	function removeContainer() {
-		unlock();
+		currentElement.unlock();
 		const overlay = getContainer();
 		removeSvg();
 		removeDom(overlay?.querySelector('.ug-close-button'));
@@ -189,53 +184,19 @@ export default function guide(config: IGuiderConfig) {
 		}
 	}
 
-	function preventClick(event) {
-		try {
-			event?.stopImmediatePropagation();
-		} catch {
-		}
-		event?.stopPropagation();
-		event?.preventDefault();
-
-
-	}
-
-	function lock() {
-		const element = (currentElement?.target as HTMLElement) || document.body;
-		if(element) {
-			currentElement.pointerEvent = element.style.pointerEvents;
-			element.style.pointerEvents = 'none';
-			element.addEventListener('click', preventClick);
-		}
-	}
-
-	function unlock() {
-		if(currentElement?.pointerEvent !== undefined) {
-			const element = (currentElement?.target as HTMLElement) || document.body;
-			element.style.pointerEvents = currentElement.pointerEvent;
-			element.removeEventListener('click', preventClick);
-		}
-
-	}
-
-
 	// main function
 	function showGuide() {
-		if (!currentElement.text) {
-			throw new UserGuiderError('element must contain text attribute');
-		}
-		currentElement.target = currentElement.element ? document.querySelector(currentElement.element) : undefined;
-		lock();
-		const rect = getElementRect(currentElement.target);
-		const onTop = rect.top <= WINDOW_HEIGHT() / 2;
-		const svg = createSvg(rect.left, rect.top, rect.width, rect.height, rect.right, rect.bottom);
 		if (isNotNoneAnimation) {
 			guiderContainer.style.animation = `${ options.animation.type || defaultOptions.animation }-out ${ ANIMATE_TIME }ms forwards`;
 		}
-		setTimeout(() => {
-			if (afterGuideLastFn) {
-				afterGuideLastFn();
+		setTimeout(async () => {
+			if (!currentElement.text) {
+				throw new UserGuiderError('element must contain text attribute');
 			}
+			currentElement.lock();
+			const rect = await getElementRect(currentElement);
+			const onTop = rect.top <= WINDOW_HEIGHT() / 2;
+			const svg = createSvg(rect.left, rect.top, rect.width, rect.height, rect.right, rect.bottom);
 			const isElementPosition = currentElement.target && currentElement.position === ElementPosition.element;
 			if (currentElement.title) {
 				guiderTitle.style.display = '';

@@ -1,3 +1,5 @@
+import { GuiderElement } from './GuiderElement';
+
 const listenersMap = new Map<any, any[]>();
 export function createDom(type: keyof HTMLElementTagNameMap, id?: string, classes?: string[], children?: HTMLElement[], listeners?: {type: any, fn: any}[]) {
 	const dom: HTMLElement = document.createElement(type);
@@ -26,7 +28,6 @@ export function createDom(type: keyof HTMLElementTagNameMap, id?: string, classe
 	return dom;
 }
 
-
 export function removeDom(dom: HTMLElement) {
 	if(listenersMap.has(dom)) {
 		listenersMap.get(dom).forEach( (l) => {
@@ -37,13 +38,36 @@ export function removeDom(dom: HTMLElement) {
 	dom.parentElement.removeChild(dom);
 }
 
-export function getElementRect(element: Element | string) {
-	if(!element) {
-		return {top: 0, left: 0, width: 0, height: 0, right: 0, bottom: 0};
+export function preventClick(event): void {
+	try {
+		event?.stopImmediatePropagation();
+	} catch {
 	}
-	if(typeof element === 'string') {
-		element = document.querySelector(element);
-	}
+	event?.stopPropagation();
+	event?.preventDefault();
 
-	return element.getBoundingClientRect();
+
+}
+
+export function getElementRect(guiderElement: GuiderElement): Promise<DOMRect> {
+	if(!guiderElement.target) {
+		const div = document.createElement('div');
+		return Promise.resolve(div.getBoundingClientRect());
+	}
+	return new Promise( resolve => {
+		let rect;
+		let lastX = Infinity;
+		let lastY = Infinity;
+		const getRect = () => {
+			rect = guiderElement.target[0].getBoundingClientRect();
+			if(rect.x !== lastX || rect.y !== lastY) {
+				lastX = rect.x;
+				lastY = rect.y;
+				setTimeout(getRect, 50);
+			}
+			else
+				resolve(rect);
+		};
+		getRect();
+	})
 }
