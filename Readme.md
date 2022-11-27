@@ -41,7 +41,7 @@ elements is an `array` of `objects` with the following properties:
 |:--------:|:-------:|:------:|---------------------------------------------------------------------------------------------------------------------------------|
 |   text   |   true  | string | the description on this element                                                                                                 |                                                                                                                               |
 |   element   |  false  | string &#124;Array&lt;string&gt; | a css selector of the dom we want the guide window will be near to.<br> if not provide the guide window will place in the center. |
-|   title  |  false  | string | the title for this step                                                                                                         |
+|   title  |  false  | string | the title for this step<br>if provide use in the navigator container for this step instead of the step index                                                                                                    |
 | position | false | 'center' &verbar; 'element' | the position of the guider, default to element. |
 | beforeGuide| false| function| a function that be called before this step will be run.|
 | afterGuide| false | function | a function that be called after this step in done, called with the current dom element if exist |

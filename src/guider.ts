@@ -153,10 +153,10 @@ export default function guide(config: IGuiderConfig) {
 		const spanPrev = createDom('span');
 		const spanNext = createDom('span');
 		const select = createDom('select', selectNavId, null, null, [{ type: 'change', fn: nav }]) as HTMLSelectElement;
-		for (let i = 1; i <= config.elements.length; i++) {
+		for (let i = 0; i < config.elements.length; i++) {
 			const o = createDom('option') as HTMLOptionElement;
-			o.setAttribute('value', `${ i - 1 }`);
-			o.text = `${ i }`;
+			o.setAttribute('value', `${ i }`);
+			o.text = `${ config.elements[i]?.title || i + 1 }`;
 			select.add(o);
 		}
 		const prevBtn = createDom('div', prevBtnId, ['clickable'], [spanPrev], [{ type: 'click', fn: prev }]);
