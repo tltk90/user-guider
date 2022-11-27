@@ -81,7 +81,7 @@ export function lockApp() {
 	document.addEventListener('click', preventClick);
 }
 
-export function unlockElement() {
+export function unlockApp() {
 	document.body.style.pointerEvents = bodyPointerEvents;
 	document.removeEventListener('click', preventClick);
 }
