@@ -37,23 +37,23 @@ export class GuiderElement implements IGuideElement {
 	}
 
 	lock() {
-		this.pointerEvent = [];
+		/*this.pointerEvent = [];
 		this.bodyPointerEvent = document.body.style.pointerEvents;
 		document.body.style.pointerEvents = 'none';
-		document.body.addEventListener('click', preventClick);
+		window.document.addEventListener('click', preventClick);
 		this.target?.forEach((el, i) => {
 			el.addEventListener('click', preventClick);
 			this.pointerEvent[i] = el.style.pointerEvents;
 			el.style.pointerEvents = 'none';
-		});
+		});*/
 	}
 
 	unlock() {
-		document.body.removeEventListener('click', preventClick);
+		/*window.document.removeEventListener('click', preventClick);
 		document.body.style.pointerEvents = this.bodyPointerEvent;
 		this.target?.forEach( (el, i) => {
 			el.removeEventListener('click', preventClick);
 			el.style.pointerEvents = this.pointerEvent[i];
-		})
+		})*/
 	}
 }

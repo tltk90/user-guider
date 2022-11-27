@@ -49,17 +49,26 @@ export function preventClick(event): void {
 
 }
 
-export function getElementRect(guiderElement: GuiderElement): Promise<DOMRect> {
+export function getElementRect(guiderElement: GuiderElement): Promise<DOMRect[]> {
 	if(!guiderElement.target) {
 		const div = document.createElement('div');
-		return Promise.resolve(div.getBoundingClientRect());
+		return Promise.resolve([div.getBoundingClientRect()]);
 	}
+	const rectPs = guiderElement.target.map( el => findOneRect(el));
+
+
+	return Promise.all(rectPs);
+
+}
+
+
+function findOneRect(el: HTMLElement): Promise<DOMRect> {
 	return new Promise( resolve => {
 		let rect;
 		let lastX = Infinity;
 		let lastY = Infinity;
 		const getRect = () => {
-			rect = guiderElement.target[0].getBoundingClientRect();
+			rect = el.getBoundingClientRect();
 			if(rect.x !== lastX || rect.y !== lastY) {
 				lastX = rect.x;
 				lastY = rect.y;

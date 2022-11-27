@@ -36,7 +36,6 @@ export default function guide(config: IGuiderConfig) {
 	const WINDOW_WIDTH = () => document.body.clientWidth;
 	const WINDOW_HEIGHT = () => document.body.clientHeight;
 	const options = Object.assign({}, config.options);
-	let afterGuideLastFn;
 	assert(options);
 	const ANIMATE_TIME = options.animation.type === AnimationType.none ? 0 : (options.animation.duration ? options.animation.duration : defaultOptions.animation.duration);
 	const isNotNoneAnimation = options.animation.type !== AnimationType.none;
@@ -194,9 +193,9 @@ export default function guide(config: IGuiderConfig) {
 				throw new UserGuiderError('element must contain text attribute');
 			}
 			currentElement.lock();
-			const rect = await getElementRect(currentElement);
-			const onTop = rect.top <= WINDOW_HEIGHT() / 2;
-			const svg = createSvg(rect.left, rect.top, rect.width, rect.height, rect.right, rect.bottom);
+			const rects = await getElementRect(currentElement);
+			const onTop = rects[0].top <= WINDOW_HEIGHT() / 2;
+			const svg = createSvg(rects);
 			const isElementPosition = currentElement.target && currentElement.position === ElementPosition.element;
 			if (currentElement.title) {
 				guiderTitle.style.display = '';
@@ -208,8 +207,8 @@ export default function guide(config: IGuiderConfig) {
 			let top;
 			let left;
 			if (isElementPosition) {
-				top = onTop ? rect.top + rect.height : rect.top - guiderContainer.clientHeight;
-				left = rect.left;
+				top = onTop ? rects[0].top + rects[0].height : rects[0].top - guiderContainer.clientHeight;
+				left = rects[0].left;
 			} else {
 				top = (WINDOW_HEIGHT() / 2) - (guiderContainer.clientHeight / 2);
 				left = (WINDOW_WIDTH() / 2) - (guiderContainer.clientWidth / 2);
