@@ -92,7 +92,6 @@ export default function guide(config: IGuiderConfig) {
 		if (checkIfDone()) {
 			return removeContainer();
 		}
-		currentElement && currentElement.unlock();
 		currentElement = new GuiderElement(config.elements[configIndex]);
 		currentElement.beforeGuide();
 		showGuide();
@@ -168,7 +167,6 @@ export default function guide(config: IGuiderConfig) {
 	}
 
 	function removeContainer() {
-		currentElement.unlock();
 		const overlay = getContainer();
 		removeSvg();
 		removeDom(overlay?.querySelector('.ug-close-button'));

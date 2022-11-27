@@ -29,6 +29,7 @@ guide(config)
 ```
 **you nedd to include `styles/ug.css` to your global style.**
 
+***If you want to disable the user's clicks in the app during the tour.<br>you can use the `lockApp` & `unlockApp` functions***
 # Config
 The config is an object, with the following properties
 ## elements

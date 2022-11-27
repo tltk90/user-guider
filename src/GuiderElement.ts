@@ -1,5 +1,4 @@
 import { ElementPosition, IElementConfig, IGuideElement } from './models';
-import { preventClick } from './helpers';
 
 export class GuiderElement implements IGuideElement {
 	constructor(configElement: IElementConfig) {
@@ -11,7 +10,6 @@ export class GuiderElement implements IGuideElement {
 		this.beforeGuideFn = configElement.beforeGuide;
 	}
 
-	bodyPointerEvent;
 	afterGuideFn;
 	beforeGuideFn;
 	element: Array<string>;
@@ -31,29 +29,7 @@ export class GuiderElement implements IGuideElement {
 		}
 	}
 
-
 	get target(): Array<HTMLElement> {
 		return this.element && this.element.map( el => document.querySelector(el));
-	}
-
-	lock() {
-		/*this.pointerEvent = [];
-		this.bodyPointerEvent = document.body.style.pointerEvents;
-		document.body.style.pointerEvents = 'none';
-		window.document.addEventListener('click', preventClick);
-		this.target?.forEach((el, i) => {
-			el.addEventListener('click', preventClick);
-			this.pointerEvent[i] = el.style.pointerEvents;
-			el.style.pointerEvents = 'none';
-		});*/
-	}
-
-	unlock() {
-		/*window.document.removeEventListener('click', preventClick);
-		document.body.style.pointerEvents = this.bodyPointerEvent;
-		this.target?.forEach( (el, i) => {
-			el.removeEventListener('click', preventClick);
-			el.style.pointerEvents = this.pointerEvent[i];
-		})*/
 	}
 }

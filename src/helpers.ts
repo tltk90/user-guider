@@ -1,5 +1,6 @@
 import { GuiderElement } from './GuiderElement';
 
+let bodyPointerEvents;
 const listenersMap = new Map<any, any[]>();
 
 export const WINDOW_WIDTH = () => document.body.clientWidth;
@@ -74,6 +75,16 @@ export function findGuiderLeft(rects: Array<DOMRect>, guiderWidth) {
 	return onLeft ? Math.max(...rects.map( r => r.right)) : Math.min(...rects.map(r => r.left)) - guiderWidth
 }
 
+export function lockApp() {
+	bodyPointerEvents = document.body.style.pointerEvents;
+	document.body.style.pointerEvents = 'none';
+	document.addEventListener('click', preventClick);
+}
+
+export function unlockElement() {
+	document.body.style.pointerEvents = bodyPointerEvents;
+	document.removeEventListener('click', preventClick);
+}
 // private
 function findOneRect(el: HTMLElement): Promise<DOMRect> {
 	return new Promise( resolve => {
