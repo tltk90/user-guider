@@ -1,4 +1,10 @@
+import { GuiderElement } from './GuiderElement';
+
+let bodyPointerEvents;
 const listenersMap = new Map<any, any[]>();
+
+export const WINDOW_WIDTH = () => document.body.clientWidth;
+export const WINDOW_HEIGHT = () => document.body.clientHeight;
 export function createDom(type: keyof HTMLElementTagNameMap, id?: string, classes?: string[], children?: HTMLElement[], listeners?: {type: any, fn: any}[]) {
 	const dom: HTMLElement = document.createElement(type);
 	if(id && typeof id === 'string') {
@@ -26,7 +32,6 @@ export function createDom(type: keyof HTMLElementTagNameMap, id?: string, classe
 	return dom;
 }
 
-
 export function removeDom(dom: HTMLElement) {
 	if(listenersMap.has(dom)) {
 		listenersMap.get(dom).forEach( (l) => {
@@ -37,13 +42,66 @@ export function removeDom(dom: HTMLElement) {
 	dom.parentElement.removeChild(dom);
 }
 
-export function getElementRect(element: Element | string) {
-	if(!element) {
-		return {top: 0, left: 0, width: 0, height: 0, right: 0, bottom: 0};
+export function preventClick(event): void {
+	try {
+		event?.stopImmediatePropagation();
+	} catch {
 	}
-	if(typeof element === 'string') {
-		element = document.querySelector(element);
-	}
+	event?.stopPropagation();
+	event?.preventDefault();
 
-	return element.getBoundingClientRect();
+
 }
+
+export function getElementRect(guiderElement: GuiderElement): Promise<DOMRect[]> {
+	if(!guiderElement.target) {
+		const div = document.createElement('div');
+		return Promise.resolve([div.getBoundingClientRect()]);
+	}
+	const rectPs = guiderElement.target.map( el => findOneRect(el));
+
+
+	return Promise.all(rectPs);
+
+}
+
+export function findGuiderTop(rects: Array<DOMRect>) {
+	const onTop = Math.min(...rects.map(r => r.top)) < WINDOW_HEIGHT() / 2;
+	return onTop ? Math.max(...rects.map( r => r.bottom)) : Math.min(...rects.map( r => r.top));
+}
+
+export function findGuiderLeft(rects: Array<DOMRect>, guiderWidth) {
+	const onLeft = Math.min(...rects.map( r => r.left)) < WINDOW_WIDTH() / 2;
+	return onLeft ? Math.max(...rects.map( r => r.right)) : Math.min(...rects.map(r => r.left)) - guiderWidth
+}
+
+export function lockApp() {
+	bodyPointerEvents = document.body.style.pointerEvents;
+	document.body.style.pointerEvents = 'none';
+	document.addEventListener('click', preventClick);
+}
+
+export function unlockApp() {
+	document.body.style.pointerEvents = bodyPointerEvents;
+	document.removeEventListener('click', preventClick);
+}
+// private
+function findOneRect(el: HTMLElement): Promise<DOMRect> {
+	return new Promise( resolve => {
+		let rect;
+		let lastX = Infinity;
+		let lastY = Infinity;
+		const getRect = () => {
+			rect = el.getBoundingClientRect();
+			if(rect.x !== lastX || rect.y !== lastY) {
+				lastX = rect.x;
+				lastY = rect.y;
+				setTimeout(getRect, 50);
+			}
+			else
+				resolve(rect);
+		};
+		getRect();
+	})
+}
+
