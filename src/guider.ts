@@ -95,7 +95,7 @@ export default function guide(config: IGuiderConfig) {
 		currentElement && currentElement.unlock();
 		currentElement = new GuiderElement(config.elements[configIndex]);
 		currentElement.beforeGuide();
-		requestAnimationFrame(showGuide);
+		showGuide();
 	}
 
 	function next(e) {
@@ -189,17 +189,30 @@ export default function guide(config: IGuiderConfig) {
 		}
 	}
 
+	function hideGuiderAndSvg() {
+		const allBlackSvg = createSvg([{x: 0, y: 0, left: 0, right: 0, bottom: 0, top: 0, width: 0, height: 0}]);
+		guiderContainer.style.visibility = 'hidden';
+		removeSvg();
+		getContainer().appendChild(allBlackSvg);
+	}
+
+	function showGuideAndSvg(rects) {
+		const svg = createSvg(rects);
+		removeSvg();
+		getContainer().appendChild(svg);
+		guiderContainer.style.visibility = 'visible';
+	}
 	// main function
 	function showGuide() {
+		if (!currentElement.text) {
+			throw new UserGuiderError('element must contain text attribute');
+		}
 		if (isNotNoneAnimation) {
 			guiderContainer.style.animation = `${ options.animation.type || defaultOptions.animation }-out ${ ANIMATE_TIME }ms forwards`;
 		}
+		hideGuiderAndSvg();
 		setTimeout(async () => {
-			if (!currentElement.text) {
-				throw new UserGuiderError('element must contain text attribute');
-			}
 			const rects = await getElementRect(currentElement);
-			const svg = createSvg(rects);
 			const isElementPosition = currentElement.target && currentElement.position === ElementPosition.element;
 			if (currentElement.title) {
 				guiderTitle.style.display = '';
@@ -221,12 +234,10 @@ export default function guide(config: IGuiderConfig) {
 			guiderContainer.style.left = `${ left > 0 ? left : '0' }px`;
 
 			setButtonState();
-			guiderContainer.style.visibility = 'visible';
+			showGuideAndSvg(rects);
 			if (isNotNoneAnimation) {
 				guiderContainer.style.animation = `${ options.animation.type || defaultOptions.animation }-in ${ ANIMATE_TIME }ms forwards`;
 			}
-			removeSvg();
-			getContainer().appendChild(svg);
 			guiderContainer.scrollIntoView(true);
 			requestAnimationFrame(() => {
 				if (options.animation.type === AnimationType.slide) {
@@ -234,6 +245,6 @@ export default function guide(config: IGuiderConfig) {
 				}
 				guiderContainer.style.transform = isElementPosition ? calcTransform() : '';
 			})
-		}, ANIMATE_TIME / 2);
+		}, ANIMATE_TIME);
 	}
 }
