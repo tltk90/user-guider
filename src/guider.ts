@@ -1,6 +1,14 @@
 import UserGuiderError, { assert } from './error';
 import { createSvg, removeSvg } from './svgCreator';
-import { createDom, getElementRect, preventClick, removeDom } from './helpers';
+import {
+	createDom,
+	findGuiderLeft,
+	findGuiderTop,
+	getElementRect,
+	preventClick,
+	removeDom,
+	WINDOW_HEIGHT, WINDOW_WIDTH
+} from './helpers';
 import {
 	AnimationType,
 	ButtonsTheme,
@@ -33,8 +41,6 @@ const defaultOptions: Partial<IGuiderOptions> = {
 	}
 };
 export default function guide(config: IGuiderConfig) {
-	const WINDOW_WIDTH = () => document.body.clientWidth;
-	const WINDOW_HEIGHT = () => document.body.clientHeight;
 	const options = Object.assign({}, config.options);
 	assert(options);
 	const ANIMATE_TIME = options.animation.type === AnimationType.none ? 0 : (options.animation.duration ? options.animation.duration : defaultOptions.animation.duration);
@@ -192,9 +198,7 @@ export default function guide(config: IGuiderConfig) {
 			if (!currentElement.text) {
 				throw new UserGuiderError('element must contain text attribute');
 			}
-			currentElement.lock();
 			const rects = await getElementRect(currentElement);
-			const onTop = rects[0].top <= WINDOW_HEIGHT() / 2;
 			const svg = createSvg(rects);
 			const isElementPosition = currentElement.target && currentElement.position === ElementPosition.element;
 			if (currentElement.title) {
@@ -207,8 +211,8 @@ export default function guide(config: IGuiderConfig) {
 			let top;
 			let left;
 			if (isElementPosition) {
-				top = onTop ? rects[0].top + rects[0].height : rects[0].top - guiderContainer.clientHeight;
-				left = rects[0].left;
+				top = findGuiderTop(rects);
+				left = findGuiderLeft(rects, guiderContainer.clientWidth);
 			} else {
 				top = (WINDOW_HEIGHT() / 2) - (guiderContainer.clientHeight / 2);
 				left = (WINDOW_WIDTH() / 2) - (guiderContainer.clientWidth / 2);
