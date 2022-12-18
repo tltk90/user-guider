@@ -223,7 +223,7 @@ export default function guide(config: IGuiderConfig) {
 			let left;
 			if (isElementPosition) {
 				top = findGuiderTop(rects);
-				left = findGuiderLeft(rects, guiderContainer.clientWidth);
+				left = findGuiderLeft(rects, guiderContainer.clientWidth + 10);
 			} else {
 				top = (WINDOW_HEIGHT() / 2) - (guiderContainer.clientHeight / 2);
 				left = (WINDOW_WIDTH() / 2) - (guiderContainer.clientWidth / 2);
