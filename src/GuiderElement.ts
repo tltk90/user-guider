@@ -25,7 +25,7 @@ export class GuiderElement implements IGuideElement {
 
 	beforeGuide(): void {
 		if(this.beforeGuideFn) {
-			setTimeout(this.beforeGuideFn(), 0);
+			setTimeout(() => this.beforeGuideFn(), 10);
 		}
 	}
 
